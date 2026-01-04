@@ -6,6 +6,7 @@ import { ScriptGenerator } from "@/lib/brain/ScriptGenerator";
 import { motion } from "framer-motion";
 import { FileText, AlertTriangle, Check, Mic } from "lucide-react";
 import clsx from "clsx";
+import { generateScriptWithGemini } from "@/app/actions/gemini";
 
 export default function ScriptEditor() {
     const { selectedTrend, config, setModule, setScript, addLog } = useAppStore();
@@ -23,7 +24,8 @@ export default function ScriptEditor() {
 
         try {
             // 1. Try AI Generation
-            const { generateScriptWithGemini } = await import("@/app/actions/gemini");
+            // Static import used
+            // const { generateScriptWithGemini } = await import("@/app/actions/gemini");
             const aiResult = await generateScriptWithGemini(selectedTrend.topic, config, tone);
 
             if (aiResult && aiResult.sections) {
