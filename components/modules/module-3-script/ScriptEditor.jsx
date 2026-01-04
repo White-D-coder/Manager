@@ -26,7 +26,7 @@ export default function ScriptEditor() {
             // 1. Try AI Generation
             // Static import used
             // const { generateScriptWithGemini } = await import("@/app/actions/gemini");
-            const aiResult = await generateScriptWithGemini(selectedTrend.topic, config, tone);
+            const aiResult = await generateScriptWithGemini(selectedTrend, config, tone);
 
             if (aiResult && aiResult.sections) {
                 addLog({ module: 'ScriptBrain', level: 'success', message: 'Gemini generated unique viral structure.' });
