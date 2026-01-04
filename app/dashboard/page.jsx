@@ -1,7 +1,7 @@
 "use client";
 
-import { useAppStore } from "@/lib/store";
-import ConfigForm from "@/components/modules/module-0-input/ConfigForm";
+import { useAppStore } from "../../lib/store";
+import ConfigForm from "../../components/modules/module-0-input/ConfigForm";
 import { motion } from "framer-motion";
 
 export default function DashboardPage() {
