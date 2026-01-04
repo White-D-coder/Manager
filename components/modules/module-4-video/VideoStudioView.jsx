@@ -5,6 +5,7 @@ import { useAppStore } from "@/lib/store";
 import { VideoRenderer } from "@/lib/brain/VideoRenderer";
 import { motion } from "framer-motion";
 import { Film, Play } from "lucide-react";
+import { searchStockVideos } from "@/app/actions/pexels";
 
 export default function VideoStudioView() {
     const { generatedScript, setModule, setVideoAsset, addLog } = useAppStore();
@@ -19,7 +20,8 @@ export default function VideoStudioView() {
         const loadAssets = async () => {
             addLog({ module: 'VideoCore', level: 'info', message: 'Sourcing 4K stock footage via Pexels API...' });
 
-            const { searchStockVideos } = await import("@/app/actions/pexels");
+            // Static import used
+            // const { searchStockVideos } = await import("@/app/actions/pexels");
             const newVideos = {};
 
             // Fetch a video for each section based on visual cue
