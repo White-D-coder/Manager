@@ -1,16 +1,19 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
         "paths": {
             "@/*": [
                 "./*"
             ]
-        }
+        },
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "target": "es2017",
+        "jsx": "preserve"
     },
     "include": [
-        "next-env.d.ts",
         "**/*.js",
-        "**/*.jsx",
-        ".next/types/**/*.ts"
+        "**/*.jsx"
     ],
     "exclude": [
         "node_modules"
