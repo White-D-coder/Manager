@@ -1,7 +1,7 @@
 "use client";
 
-import { useAppStore } from "../../lib/store";
-import ConfigForm from "../../components/modules/module-0-input/ConfigForm";
+import { useAppStore } from "@/lib/store";
+import ConfigForm from "@/components/modules/module-0-input/ConfigForm";
 import { motion } from "framer-motion";
 
 export default function DashboardPage() {
@@ -57,9 +57,9 @@ function ActiveSystemView() {
 
 // Dynamic Imports to avoid SSR issues if needed, but for now direct import is fine.
 // Dynamic Imports to avoid SSR issues if needed, but for now direct import is fine.
-import DataStreamView from "../../components/modules/module-1-data/DataStreamView";
-import DecisionView from "../../components/modules/module-2-trend/DecisionView";
-import ScriptEditor from "../../components/modules/module-3-script/ScriptEditor";
-import VideoStudioView from "../../components/modules/module-4-video/VideoStudioView";
-import ThumbnailLab from "../../components/modules/module-5-thumb/ThumbnailLab";
-import DeploymentCenter from "../../components/modules/module-6-schedule/DeploymentCenter";
+import DataStreamView from "@/components/modules/module-1-data/DataStreamView";
+import DecisionView from "@/components/modules/module-2-trend/DecisionView";
+import ScriptEditor from "@/components/modules/module-3-script/ScriptEditor";
+import VideoStudioView from "@/components/modules/module-4-video/VideoStudioView";
+import ThumbnailLab from "@/components/modules/module-5-thumb/ThumbnailLab";
+import DeploymentCenter from "@/components/modules/module-6-schedule/DeploymentCenter";
