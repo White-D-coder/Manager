@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Calendar, UploadCloud, Activity, RefreshCw, Zap, Brain } from "lucide-react";
 import clsx from "clsx";
 import { MemorySystem } from "@/lib/brain/MemorySystem";
+import { getRealChannelStats } from "@/app/actions/youtube";
 
 export default function DeploymentCenter() {
     const { videoAsset, config, setModule, addLog } = useAppStore();
@@ -40,7 +41,8 @@ export default function DeploymentCenter() {
         if (stage === 8) {
             const fetchStats = async () => {
                 try {
-                    const { getRealChannelStats } = await import("@/app/actions/youtube");
+                    // Static import used
+                    // const { getRealChannelStats } = await import("@/app/actions/youtube");
                     const stats = await getRealChannelStats();
                     if (stats) {
                         addLog({ module: 'Analytics', level: 'success', message: `CHANNEL CONNECTED: ${stats.title}` });
