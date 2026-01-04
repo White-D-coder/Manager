@@ -144,17 +144,22 @@ export default function ScriptEditor() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.5 }}
-                        className="border-l-2 border-accent/20 pl-4 py-2 hover:border-accent transition-colors"
+                        className="border-l-2 border-accent/20 pl-4 py-4 hover:border-accent transition-colors group"
                     >
-                        <div className="flex justify-between text-[10px] text-zinc-500 uppercase tracking-widest mb-1">
-                            <span>{section.type}</span>
+                        <div className="flex justify-between text-[10px] text-zinc-500 uppercase tracking-widest mb-2">
+                            <span className="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">{section.type}</span>
                             <span>{(section.duration_ms / 1000).toFixed(1)}s</span>
                         </div>
-                        <div className="text-lg text-white font-medium leading-relaxed">
+
+                        <div className="text-lg text-white font-medium leading-relaxed font-sans mb-3">
                             {section.text}
                         </div>
-                        <div className="text-xs text-secondary mt-2 italic opacity-60">
-                            [Visual: {section.visual_cue}]
+
+                        {/* Cinematic Visual Cue - Highlights the "Million Dollar" Prompt */}
+                        <div className="bg-surface-highlight border border-white/5 rounded p-3 text-xs font-mono text-zinc-400 group-hover:text-zinc-300 transition-colors relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-1 h-full bg-warning/50" />
+                            <span className="text-warning uppercase tracking-widest mr-2 text-[10px] font-bold">DIR. CUE:</span>
+                            {section.visual_cue}
                         </div>
                     </motion.div>
                 ))}
