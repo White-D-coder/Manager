@@ -6,6 +6,7 @@ import { DecisionEngine } from "@/lib/brain/DecisionEngine";
 import { motion, AnimatePresence } from "framer-motion";
 import { BrainCircuit, CheckCircle, XCircle } from "lucide-react";
 import clsx from "clsx";
+import { analyzeWithGemini } from "@/app/actions/gemini";
 
 export default function DecisionView() {
     const { currentTrends, config, setModule, setSelectedTrend, addLog } = useAppStore();
@@ -32,7 +33,8 @@ export default function DecisionView() {
 
             // 2. AI Reasoning (The "True" Brain)
             try {
-                const { analyzeWithGemini } = await import("@/app/actions/gemini");
+                // Static import used
+                // const { analyzeWithGemini } = await import("@/app/actions/gemini");
                 const result = await analyzeWithGemini(currentTrends);
 
                 if (result && result.winnerId) {
