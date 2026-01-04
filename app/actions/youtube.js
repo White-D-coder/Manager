@@ -4,8 +4,17 @@ import { YouTubeService } from "@/lib/api/youtube";
 import { cookies } from "next/headers";
 
 export async function getYouTubeAuthUrl() {
-    // In a real app, you might generate a 'state' token here for security
-    return YouTubeService.getAuthUrl();
+    console.log("Debug: Generating YouTube Auth URL...");
+    console.log("Debug: Env Check - ClientID:", !!process.env.YOUTUBE_CLIENT_ID, "Secret:", !!process.env.YOUTUBE_CLIENT_SECRET);
+
+    try {
+        const url = YouTubeService.getAuthUrl();
+        console.log("Debug: Generated URL:", url ? "YES (Length: " + url.length + ")" : "NO");
+        return url;
+    } catch (error) {
+        console.error("Debug: Error generating auth URL:", error);
+        return null;
+    }
 }
 
 export async function fetchRealYouTubeTrends(query) {
