@@ -21,6 +21,8 @@ export async function fetchRealYouTubeTrends(query) {
     const cookieStore = await cookies();
     const token = cookieStore.get("yt_access_token")?.value;
 
+    console.log(`Debug: fetchRealYouTubeTrends called with query: "${query}"`);
+
     if (!token) {
         console.log("No YouTube token found in cookies.");
         return [];
