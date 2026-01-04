@@ -5,6 +5,7 @@ import { useAppStore } from "@/lib/store";
 import { Zap, Target, LayoutGrid, Youtube, Check } from "lucide-react";
 import clsx from "clsx";
 import { getYouTubeAuthUrl, getRealChannelStats } from "@/app/actions/youtube";
+import { generateStrategy } from "@/app/actions/strategy";
 
 export default function ConfigForm() {
     const { config, setConfig, startSystem, addLog, setStrategyProfile } = useAppStore();
@@ -33,7 +34,8 @@ export default function ConfigForm() {
         addLog({ module: "System", level: "info", message: "Analyzing genre architecture..." });
 
         try {
-            const { generateStrategy } = await import("@/app/actions/strategy");
+            // Static import used
+            // const { generateStrategy } = await import("@/app/actions/strategy");
             const strategy = await generateStrategy(config.initial_genre);
             setStrategyProfile(strategy);
             addLog({ module: "System", level: "success", message: `Strategy Locked: ${strategy.voice_tone} / ${strategy.visual_style}` });
