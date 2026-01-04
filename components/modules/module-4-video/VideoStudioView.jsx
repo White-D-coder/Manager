@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { VideoRenderer } from "@/lib/brain/VideoRenderer";
 import { motion } from "framer-motion";
-import { Film, Play } from "lucide-react";
-import { searchStockVideos } from "@/app/actions/pexels";
+import { generateVideoWithVeo } from "@/app/actions/veo";
 
 export default function VideoStudioView() {
     const { generatedScript, setModule, setVideoAsset, addLog } = useAppStore();
@@ -18,24 +17,29 @@ export default function VideoStudioView() {
         if (!generatedScript || asset) return;
 
         const loadAssets = async () => {
-            addLog({ module: 'VideoCore', level: 'info', message: 'Sourcing 4K stock footage via Pexels API...' });
+            addLog({ module: 'VideoCore', level: 'info', message: 'Initializing Gemini Veo (Generative Video Model)...' });
 
-            // Static import used
-            // const { searchStockVideos } = await import("@/app/actions/pexels");
+            // const { searchStockVideos } = await import("@/app/actions/pexels"); // Removed Pexels
             const newVideos = {};
 
-            // Fetch a video for each section based on visual cue
+            // Generate a video for each section based on visual cue
+            // We prioritize the HEAD section (Hook) first for speed
             for (const section of generatedScript.sections) {
-                const results = await searchStockVideos(section.visual_cue);
-                if (results && results.length > 0) {
-                    newVideos[section.id] = results[0].url; // Take the best match
-                    addLog({ module: 'VideoCore', level: 'info', message: `FOUND ASSET: ${section.visual_cue.substring(0, 20)}...` });
+                addLog({ module: 'VideoGen', level: 'info', message: `Synthesizing scene: "${section.visual_cue.substring(0, 30)}..."` });
+
+                const videoUrl = await generateVideoWithVeo(section.visual_cue);
+
+                if (videoUrl) {
+                    newVideos[section.id] = videoUrl;
+                    addLog({ module: 'VideoGen', level: 'success', message: `SCENE RENDERED: Frame ${section.id}` });
+                    // Update state incrementally so user sees progress
+                    setSectionVideos(prev => ({ ...prev, [section.id]: videoUrl }));
                 }
             }
-            setSectionVideos(newVideos);
 
             // Start Render Simulation after assets are loaded
-            const duration = 4000;
+            // We speed this up slightly now that "Generation" was the time consuming part
+            const duration = 2000;
             const interval = setInterval(() => {
                 setProgress(prev => {
                     if (prev >= 100) {
@@ -43,9 +47,9 @@ export default function VideoStudioView() {
                         setLocalAsset(VideoRenderer.initializeRender(generatedScript));
                         return 100;
                     }
-                    return prev + 5;
+                    return prev + 10;
                 });
-            }, duration / 20);
+            }, duration / 10);
 
             return () => clearInterval(interval);
         };
