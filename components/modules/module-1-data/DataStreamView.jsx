@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import { Wifi, Search, ArrowUpRight } from "lucide-react";
+import { fetchRealYouTubeTrends } from "@/app/actions/youtube";
 
 export default function DataStreamView() {
     const { config, addLog, setModule } = useAppStore();
@@ -20,7 +21,8 @@ export default function DataStreamView() {
         // TRY REAL API FIRST
         let data = [];
         try {
-            const { fetchRealYouTubeTrends } = await import("@/app/actions/youtube");
+            // Static import used
+            // const { fetchRealYouTubeTrends } = await import("@/app/actions/youtube");
             const realTrends = await fetchRealYouTubeTrends(query || config.initial_genre);
             if (realTrends && realTrends.length > 0) {
                 addLog({ module: "DataCapture", level: "success", message: `RECEIVED LIVE PACKET FROM YOUTUBE API: ${realTrends.length} items.` });
