@@ -5,6 +5,7 @@ import { useAppStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import { Wifi, Search, ArrowUpRight } from "lucide-react";
 import { fetchRealYouTubeTrends } from "@/app/actions/youtube";
+import { EngagementScorer } from "@/lib/brain/EngagementScorer";
 
 export default function DataStreamView() {
     const { config, addLog, setModule } = useAppStore();
@@ -23,13 +24,26 @@ export default function DataStreamView() {
         try {
             // Static import used
             // const { fetchRealYouTubeTrends } = await import("@/app/actions/youtube");
-            const realTrends = await fetchRealYouTubeTrends(query || config.initial_genre);
-            if (realTrends && realTrends.length > 0) {
-                addLog({ module: "DataCapture", level: "success", message: `RECEIVED LIVE PACKET FROM YOUTUBE API: ${realTrends.length} items.` });
-                data = realTrends;
+            const rawThreads = await fetchRealYouTubeTrends(query || config.initial_genre);
+
+            if (rawThreads && rawThreads.length > 0) {
+                // MODULE B: RUN ENGAGEMENT SCORING
+                const rankedTrends = EngagementScorer.rank(rawThreads);
+
+                addLog({ module: "DataCapture", level: "success", message: `CAPTURED & RANKED ${rankedTrends.length} SIGNALS.` });
+
+                // Map to UI format
+                data = rankedTrends.map(t => ({
+                    id: t.video_id,
+                    topic: t.title,
+                    source: 'youtube_real',
+                    volume: t.views,
+                    growth_rate: Math.round(t.view_velocity || 0),
+                    trend_score: t.engagement_score
+                }));
             }
         } catch (e) {
-            console.warn("Real API failed, falling back to sim", e);
+            // ...
         }
 
         // NO FALLBACK - User requested Pure Real Data
