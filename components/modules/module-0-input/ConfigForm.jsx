@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { Zap, Target, LayoutGrid, Youtube, Check } from "lucide-react";
 import clsx from "clsx";
-import { getYouTubeAuthUrl } from "@/app/actions/youtube";
+import { getYouTubeAuthUrl, getRealChannelStats } from "@/app/actions/youtube";
 
 export default function ConfigForm() {
     const { config, setConfig, startSystem, addLog, setStrategyProfile } = useAppStore();
@@ -15,7 +15,8 @@ export default function ConfigForm() {
 
     useEffect(() => {
         const checkConnection = async () => {
-            const { getRealChannelStats } = await import("@/app/actions/youtube");
+            // Static import used
+            // const { getRealChannelStats } = await import("@/app/actions/youtube");
             const stats = await getRealChannelStats();
             if (stats) {
                 setIsConnected(true);
