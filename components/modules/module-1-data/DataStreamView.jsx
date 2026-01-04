@@ -46,97 +46,120 @@ export default function DataStreamView() {
             // ...
         }
 
-        // NO FALLBACK - User requested Pure Real Data
-        // If data is empty after real API try, it stays empty so user knows something is wrong.
+        console.error(e);
+        addLog({ module: 'DataStream', level: 'error', message: 'Signal Capture Failed.' });
+    }
+    setIsScanning(false);
+};
 
-        setTrends(data);
-        setLoading(false);
+const handleSelect = (trend) => {
+    setSelectedTrend(trend);
+    addLog({ module: 'System', level: 'info', message: `Locked target: ${trend.topic}` });
+    setModule(2); // Move to Strategy/Decision
+};
 
-        addLog({ module: "DataCapture", level: "success", message: `Captured ${data.length} potential trend vectors.` });
-        useAppStore.getState().setTrends(data);
-    };
+useEffect(() => {
+    scan();
+}, []);
 
-    useEffect(() => {
-        addLog({ module: "DataCapture", level: "info", message: `Scanning signal frequencies for: ${config.initial_genre}` });
-        scan();
+return (
+    <div className="h-full flex flex-col p-6 gap-6 relative">
+        <div className="flex items-center justify-between">
+            <h3 className="flex items-center gap-2 text-accent font-mono text-xl">
+                <Radio className={clsx("w-6 h-6", isScanning && "animate-pulse")} />
+                DATA_STREAM_NODE // {config.niche.toUpperCase()}
+            </h3>
+            <button
+                onClick={scan}
+                disabled={isScanning}
+                className="flex items-center gap-2 bg-accent/10 text-accent border border-accent/20 px-4 py-2 rounded hover:bg-accent/20 transition-all disabled:opacity-50"
+            >
+                <Radar className={clsx("w-4 h-4", isScanning && "animate-spin")} />
+                {isScanning ? 'SCANNING ETHER...' : 'START MACHINE'}
+            </button>
+        </div>
 
-        // Auto-advance
-        setTimeout(() => {
-            if (!useAppStore.getState().selectedTrend) { // Only auto-advance if user hasn't intervened (simple check)
-                addLog({ module: "System", level: "info", message: "Handing off to Decision Brain (Module 2)..." });
-                setModule(2);
-            }
-        }, 8000); // Increased delay to allow interaction
-    }, []);
+        {/* DEEP RESEARCH HUD */}
+        {deepResearch && (
+            <div className="grid grid-cols-2 gap-4 mb-2">
+                <div className="bg-surface/50 border border-success/30 p-3 rounded flex flex-col">
+                    <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">OPTIMAL UPLOAD WINDOW</span>
+                    <div className="text-xl text-success font-bold font-mono mt-1">
+                        {deepResearch.best_day} <span className="text-white">@</span> {deepResearch.best_hour_formatted}
+                    </div>
+                </div>
+                {deepResearch.viral_outlier && (
+                    <div className="bg-surface/50 border border-warning/30 p-3 rounded flex flex-col">
+                        <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">VIRAL OUTLIER DETECTED</span>
+                        <div className="text-sm text-zinc-300 font-mono mt-1 truncate">
+                            <span className="text-warning font-bold">{deepResearch.viral_outlier.viral_ratio.toFixed(1)}x Ratio</span> by {deepResearch.viral_outlier.channelTitle}
+                        </div>
+                    </div>
+                )}
+            </div>
+        )}
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (!searchQuery.trim()) return;
-        scan(searchQuery);
-    };
-
-    return (
-        <div className="h-full flex flex-col gap-6">
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 bg-surface border-b border-border">
-                <h3 className="flex items-center gap-2 text-secondary font-mono">
-                    <Wifi className="w-4 h-4 animate-pulse" />
-                    DATA_CAPTURE_STREAM // ACTIVE
-                </h3>
-
-                <form onSubmit={handleSearch} className="flex gap-2">
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="SEARCH LIVE DATA..."
-                        className="bg-black border border-zinc-700 rounded px-2 py-1 text-xs font-mono text-white focus:border-secondary outline-none w-48"
-                    />
-                    <button type="submit" className="bg-secondary/20 text-secondary border border-secondary p-1 rounded hover:bg-secondary/40">
-                        <ArrowUpRight className="w-3 h-3" />
-                    </button>
-                </form>
+        <div className="flex-1 bg-surface border border-border rounded-lg overflow-hidden flex flex-col">
+            <div className="grid grid-cols-12 bg-black/40 p-3 text-xs text-zinc-500 font-mono border-b border-border uppercase tracking-wider">
+                <div className="col-span-1">Rank</div>
+                <div className="col-span-1">Ratio</div> {/* New Column */}
+                <div className="col-span-5">Signal Topic</div>
+                <div className="col-span-2 text-right">Velocity</div>
+                <div className="col-span-2 text-right">Engagement</div>
+                <div className="col-span-1"></div>
             </div>
 
-            {loading ? (
-                <div className="flex-1 flex flex-col items-center justify-center space-y-4">
-                    <Search className="w-12 h-12 text-secondary animate-bounce" />
-                    <p className="font-mono text-secondary animate-pulse">SCANNING GLOBAL NETWORKS...</p>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-                    {trends.length === 0 ? (
-                        <div className="col-span-4 flex flex-col items-center justify-center p-12 opacity-50 space-y-2">
-                            <Wifi className="w-8 h-8" />
-                            <p>NO DATA SIGNAL. CHECK YOUTUBE CONNECTION.</p>
+            <div className="flex-1 overflow-y-auto">
+                {streamData.map((item, i) => (
+                    <div key={item.id} className="grid grid-cols-12 p-3 border-b border-white/5 hover:bg-white/5 transition-colors items-center group text-sm">
+                        <div className="col-span-1 font-mono text-zinc-500">#{i + 1}</div>
+
+                        {/* Viral Ration Badge */}
+                        <div className="col-span-1 font-mono">
+                            <span className={clsx(
+                                "px-1.5 py-0.5 rounded text-[10px]",
+                                item.viral_ratio > 2 ? "bg-purple-500/20 text-purple-400 border border-purple-500/30" : "text-zinc-600"
+                            )}>
+                                {item.viral_ratio ? `${item.viral_ratio.toFixed(1)}x` : '-'}
+                            </span>
                         </div>
-                    ) : (
-                        trends.map((trend, i) => (
-                            <motion.div
-                                key={trend.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.1 }}
-                                className="p-4 bg-surface-highlight border border-border rounded hover:border-secondary transition-colors group relative overflow-hidden"
+
+                        <div className="col-span-5 font-medium text-zinc-300 truncate pr-4">
+                            {item.topic}
+                            <div className="text-[10px] text-zinc-500 font-mono mt-0.5 flex gap-2">
+                                <span>{item.channelTitle}</span>
+                                <span>•</span>
+                                <span>{(item.duration_sec / 60).toFixed(1)}m</span>
+                            </div>
+                        </div>
+
+                        <div className="col-span-2 text-right font-mono text-accent">
+                            {item.velocity_score}
+                            <span className="text-[10px] text-zinc-600 ml-1">v/h</span>
+                        </div>
+
+                        <div className="col-span-2 text-right font-mono text-zinc-400">
+                            {item.engagement_score}
+                        </div>
+
+                        <div className="col-span-1 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                                onClick={() => handleSelect(item)}
+                                className="p-1.5 bg-accent text-black rounded hover:bg-accent-highlight"
                             >
-                                <div className="absolute top-0 right-0 p-2 text-[10px] font-mono text-zinc-600 group-hover:text-secondary">
-                                    SRC: {trend.source.toUpperCase()}
-                                </div>
-                                <div className="mt-4 font-bold text-white mb-2 line-clamp-2">{trend.topic}</div>
+                                <ArrowRight className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+                ))}
 
-                                <div className="grid grid-cols-2 gap-2 text-xs font-mono text-zinc-400">
-                                    <div>VOL: {trend.volume}</div>
-                                    <div className={trend.growth_rate > 0 ? "text-success" : "text-destructive"}>
-                                        {trend.growth_rate > 0 ? "+" : ""}{trend.growth_rate}%
-                                    </div>
-                                </div>
-
-                                {/* Decorative scan line */}
-                                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-secondary/50 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500" />
-                            </motion.div>
-                        )))}
-                </div>
-            )}
+                {streamData.length === 0 && !isScanning && (
+                    <div className="h-full flex items-center justify-center text-zinc-600 font-mono text-sm">
+                        Waiting for Signal Scan...
+                    </div>
+                )}
+            </div>
         </div>
-    );
+    </div>
+);
 }
