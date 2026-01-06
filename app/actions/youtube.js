@@ -41,5 +41,13 @@ export async function getRealChannelStats() {
     }
 
     console.log("Debug: Token found. Fetching channel stats...");
+
     return await YouTubeService.getChannelStatistics(token);
+}
+
+export async function uploadVideoAction(videoAsset, metadata) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("yt_access_token")?.value;
+    if (!token) return { error: "No YouTube Token" };
+    return await YouTubeService.uploadVideo(videoAsset, metadata, token);
 }
