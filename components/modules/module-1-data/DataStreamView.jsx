@@ -17,7 +17,7 @@ export default function DataStreamView() {
 
     const scan = async (query) => {
         setIsScanning(true);
-        if (query) {
+        if (query && typeof query === 'string') {
             addLog({ module: "DataCapture", level: "info", message: `Initiating targeted search vector: [${query.toUpperCase()}]` });
         } else {
             addLog({ module: "DataCapture", level: "info", message: `Scanning signal frequencies for: ${config?.niche || config.initial_genre || "SECTOR_UNKNOWN"}` });
