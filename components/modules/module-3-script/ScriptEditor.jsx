@@ -45,14 +45,23 @@ export default function ScriptEditor() {
                     total_duration_ms: 15000,
                     tone: tone,
                     target_platform: 'reels',
-                    created_at: new Date().toISOString()
+                    created_at: new Date().toISOString(),
+                    meta: {
+                        concept: aiResult.meta_concept,
+                        audience: aiResult.meta_audience,
+                        emotion: aiResult.meta_emotion
+                    }
                 };
 
                 setLocalScript(newScript);
                 setScript(newScript);
                 setStage('validating');
                 verifyScript(newScript);
+                setStage('validating');
+                verifyScript(newScript);
                 return;
+            } else {
+                throw new Error("AI returned void payload.");
             }
         } catch (e) {
             console.error("AI Script Gen Failed", e);
@@ -137,6 +146,24 @@ export default function ScriptEditor() {
 
             <div className="flex-1 bg-surface border border-border rounded-lg p-6 overflow-y-auto space-y-6 font-mono relative">
                 {/* Paper Texture overlay if desired, keeping it clean for now */}
+
+                {/* Meta Panel */}
+                {script.meta && (
+                    <div className="bg-black/20 p-4 rounded-lg border border-white/5 mb-4 grid grid-cols-2 gap-4 text-xs font-mono">
+                        <div className="col-span-2">
+                            <span className="text-zinc-500 uppercase font-bold mr-2">CONCEPT:</span>
+                            <span className="text-white italic">{script.meta.concept}</span>
+                        </div>
+                        <div>
+                            <span className="text-zinc-500 uppercase font-bold mr-2">AUDIENCE:</span>
+                            <span className="text-zinc-300">{script.meta.audience}</span>
+                        </div>
+                        <div>
+                            <span className="text-zinc-500 uppercase font-bold mr-2">EMOTION:</span>
+                            <span className="text-accent">{script.meta.emotion}</span>
+                        </div>
+                    </div>
+                )}
 
                 {script.sections.map((section, i) => (
                     <motion.div
