@@ -138,7 +138,7 @@ export default function DataStreamView() {
 
                 <div className="flex-1 overflow-y-auto">
                     {streamData.map((item, i) => (
-                        <div key={item.id} className="grid grid-cols-12 p-3 border-b border-white/5 hover:bg-white/5 transition-colors items-center group text-sm">
+                        <div key={item.video_id || i} className="grid grid-cols-12 p-3 border-b border-white/5 hover:bg-white/5 transition-colors items-center group text-sm">
                             <div className="col-span-1 font-mono text-zinc-500">#{i + 1}</div>
 
                             {/* Viral Ration Badge */}
@@ -152,7 +152,7 @@ export default function DataStreamView() {
                             </div>
 
                             <div className="col-span-5 font-medium text-zinc-300 truncate pr-4">
-                                {item.topic}
+                                {item.title}
                                 <div className="text-[10px] text-zinc-500 font-mono mt-0.5 flex gap-2">
                                     <span>{item.channelTitle}</span>
                                     <span>•</span>
@@ -161,7 +161,7 @@ export default function DataStreamView() {
                             </div>
 
                             <div className="col-span-2 text-right font-mono text-accent">
-                                {item.velocity_score}
+                                {Math.round(item.view_velocity || 0).toLocaleString()}
                                 <span className="text-[10px] text-zinc-600 ml-1">v/h</span>
                             </div>
 
