@@ -23,3 +23,7 @@ export async function chatWithVideoAgentAction(message, context) {
 export async function analyzeUploadTimingAction(trends) {
     return await GeminiBrain.analyzeUploadTiming(trends);
 }
+
+export async function analyzeViralMetadataAction(trends) {
+    return await GeminiBrain.analyzeViralMetadata(trends);
+}
