@@ -31,14 +31,13 @@ export default function DataStreamView() {
             // MODULE B: RUN ENGAGEMENT SCORING
             const rankedTrends = EngagementScorer.rank(rawThreads);
 
-            // MODULE G: UPLOAD OPTIMIZER (Deep Research)
-            const research = UploadOptimizer.analyze(rankedTrends);
+            // MODULE G: UPLOAD OPTIMIZER (Deep Research AI)
+            const research = await UploadOptimizer.analyze(rankedTrends); // Await AI
+
             if (research) {
                 setDeepResearch(research);
-                addLog({ module: 'DeepSearch', level: 'success', message: `OPTIMIZATION FOUND: Best time is ${research.best_day} @ ${research.best_hour_formatted}` });
-                if (research.viral_outlier) {
-                    addLog({ module: 'DeepSearch', level: 'warning', message: `VIRAL ANOMALY DETECTED: ${research.viral_outlier.channelTitle} (${research.viral_outlier.viral_ratio.toFixed(1)}x Ratio)` });
-                }
+                addLog({ module: 'DeepSearch', level: 'success', message: `AI ANALYSIS COMPLETE: ${research.best_day} @ ${research.best_hour_formatted}` });
+                addLog({ module: 'DeepSearch', level: 'info', message: `Confidence: ${(research.confidence * 100).toFixed(0)}% | Reasoning: ${research.reasoning.substring(0, 60)}...` });
             }
 
             setStreamData(rankedTrends);
@@ -81,10 +80,39 @@ export default function DataStreamView() {
             {/* DEEP RESEARCH HUD */}
             {deepResearch && (
                 <div className="grid grid-cols-2 gap-4 mb-2">
-                    <div className="bg-surface/50 border border-success/30 p-3 rounded flex flex-col">
-                        <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">OPTIMAL UPLOAD WINDOW</span>
-                        <div className="text-xl text-success font-bold font-mono mt-1">
-                            {deepResearch.best_day} <span className="text-white">@</span> {deepResearch.best_hour_formatted}
+                    <div className="bg-surface/50 border border-success/30 p-3 rounded flex flex-col group relative cursor-help">
+                        <div className="flex justify-between items-center mb-1">
+                            <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">PEAK UPLOAD WINDOW</span>
+                            {deepResearch.confidence && (
+                                <span className={clsx("text-[9px] px-1.5 py-0.5 rounded font-bold",
+                                    deepResearch.confidence > 0.8 ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"
+                                )}>
+                                    {(deepResearch.confidence * 100).toFixed(0)}% CONFIDENCE
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="text-xl text-success font-bold font-mono">
+                            {deepResearch.best_day} <span className="text-white text-sm font-normal">@</span> {deepResearch.best_hour_formatted}
+                        </div>
+                        <div className="text-[10px] text-zinc-600 font-mono mt-1">
+                            {deepResearch.metrics ? `${deepResearch.metrics.avg_views_per_hour?.toLocaleString() || 0} v/hr velocity` : 'Analyzing momentum...'}
+                        </div>
+
+                        {/* AI Evidence Tooltip */}
+                        <div className="absolute top-full left-0 mt-2 w-72 bg-black/95 border border-zinc-700 p-4 rounded-lg z-50 hidden group-hover:block backdrop-blur-xl shadow-2xl">
+                            <div className="text-xs text-zinc-300 font-bold mb-2 border-b border-zinc-800 pb-2">AI STRATEGIC REASONING</div>
+                            <p className="text-[11px] text-zinc-400 leading-relaxed mb-3">
+                                {deepResearch.reasoning}
+                            </p>
+
+                            <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Top Signal Sources</div>
+                            {deepResearch.source_evidence?.slice(0, 3).map((ev, k) => (
+                                <div key={k} className="flex justify-between text-[10px] text-zinc-400 font-mono border-l-2 border-zinc-800 pl-2 mb-1">
+                                    <span className="truncate max-w-[140px]">{ev.title}</span>
+                                    <span>{ev.day} {ev.time}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
                     {deepResearch.viral_outlier && (
