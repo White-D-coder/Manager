@@ -2,6 +2,7 @@
 
 import { GeminiBrain } from "@/lib/brain/GeminiBrain";
 import { YouTubeService } from "@/lib/api/youtube";
+import { cookies } from "next/headers";
 
 export async function analyzeWithGemini(trends) {
     return await GeminiBrain.analyzeTrends(trends);
@@ -39,4 +40,17 @@ export async function analyzeUploadTimingAction(trends) {
 
 export async function analyzeViralMetadataAction(trends) {
     return await GeminiBrain.analyzeViralMetadata(trends);
+}
+
+export async function identifyWinningNicheAction() {
+    // Dynamic import to avoid cycles
+    const { ViralManager } = await import("@/lib/brain/ViralManager");
+    const cookieStore = await cookies();
+    const token = cookieStore.get("yt_access_token")?.value;
+
+    // If no token (not connected), we can't search. Return null or default.
+    // For MVP, if no token, we might return a static "Recommended" list or error.
+    if (!token) return { error: "Connect YouTube First" };
+
+    return await ViralManager.identifyWinningNiche(token);
 }
