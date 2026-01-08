@@ -21,14 +21,25 @@ export default function DashboardPage() {
 }
 
 function ActiveSystemView() {
-    const { activeModuleId } = useAppStore();
+    const { activeModuleId, winningNiche } = useAppStore();
 
     return (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="h-full rounded-lg border border-border bg-black/50 overflow-hidden relative"
+            className="h-full rounded-lg border border-border bg-black/50 overflow-hidden relative flex flex-col"
         >
+            {/* Global Niche Banner */}
+            {winningNiche && (
+                <div className="bg-purple-900/30 border-b border-purple-500/30 p-2 px-6 flex items-center justify-between backdrop-blur-sm z-10">
+                    <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                        <span className="text-xs font-bold text-purple-200 tracking-wider">WINNING STRATEGY DEPLOYED:</span>
+                    </div>
+                    <span className="text-sm font-mono font-bold text-purple-100">{winningNiche}</span>
+                </div>
+            )}
+
             {/* Background decoration */}
             <div className="absolute inset-0 pointer-events-none opacity-20"
                 style={{ backgroundImage: 'radial-gradient(circle at center, #00ff9d 1px, transparent 1px)', backgroundSize: '40px 40px' }}
