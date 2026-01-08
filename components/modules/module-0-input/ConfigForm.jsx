@@ -99,8 +99,35 @@ export default function ConfigForm() {
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-xs text-zinc-500 font-medium">Primary Niche (Be Specific)</label>
+                        <div className="space-y-2 relative">
+                            <label className="text-xs text-zinc-500 font-medium flex justify-between">
+                                <span>Primary Niche (Be Specific)</span>
+                                <button
+                                    onClick={async (e) => {
+                                        e.preventDefault();
+                                        if (!isConnected) {
+                                            alert("Connect YouTube first to scan trends!");
+                                            return;
+                                        }
+                                        const btn = e.currentTarget;
+                                        const originalText = btn.innerText;
+                                        btn.innerText = "Scanning...";
+                                        try {
+                                            const { identifyWinningNicheAction } = await import("@/app/actions/gemini");
+                                            const winner = await identifyWinningNicheAction();
+                                            if (winner && !winner.error) {
+                                                setConfig({ initial_genre: winner });
+                                            } else {
+                                                alert(winner?.error || "Scan failed");
+                                            }
+                                        } catch (err) { console.error(err); }
+                                        btn.innerText = originalText;
+                                    }}
+                                    className="text-[10px] text-purple-400 hover:text-purple-300 flex items-center gap-1 cursor-pointer transition-colors"
+                                >
+                                    ✨ AI Suggest High-Growth Niche
+                                </button>
+                            </label>
                             <input
                                 type="text"
                                 value={config.initial_genre}
