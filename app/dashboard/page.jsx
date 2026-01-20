@@ -35,8 +35,13 @@ function ActiveSystemView() {
                     <div className="flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
                         <span className="text-xs font-bold text-purple-200 tracking-wider">WINNING STRATEGY DEPLOYED:</span>
+                        <span className="text-sm font-mono font-bold text-purple-100 ml-2">{winningNiche}</span>
                     </div>
-                    <span className="text-sm font-mono font-bold text-purple-100">{winningNiche}</span>
+
+                    <a href="/dashboard/studio" className="flex items-center gap-2 px-3 py-1 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 rounded text-xs font-medium text-purple-300 transition-colors">
+                        <Zap className="w-3 h-3" />
+                        Studio
+                    </a>
                 </div>
             )}
 

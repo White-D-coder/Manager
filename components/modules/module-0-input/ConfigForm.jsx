@@ -170,6 +170,21 @@ export default function ConfigForm() {
                             </div>
                             <div className={clsx("w-2 h-2 rounded-full transition-colors", isConnected ? "bg-primary shadow-[0_0_10px_white]" : "bg-zinc-700 group-hover:bg-green-500")} />
                         </button>
+
+                        {/* Studio Link */}
+                        <a href="/dashboard/studio" className="w-full flex items-center justify-between p-4 rounded-lg border border-border hover:bg-surface-highlight hover:border-purple-500/50 transition-all group cursor-pointer text-decoration-none">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-md bg-purple-900/20 text-purple-400 group-hover:bg-purple-500 group-hover:text-black transition-colors">
+                                    <Zap className="w-5 h-5" />
+                                </div>
+                                <div className="text-left">
+                                    <div className="text-sm font-medium text-white">Growth Studio</div>
+                                    <div className="text-xs text-zinc-500 group-hover:text-zinc-400">
+                                        AI Auditor & Optimizer
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
                     </div>
 
                     <div className="glass-panel p-6 rounded-xl space-y-4">
