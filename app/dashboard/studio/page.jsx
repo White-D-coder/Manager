@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAppStore } from "@/lib/store";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertCircle, Upload, Search, Activity, Zap, BarChart3, Clock, Globe } from "lucide-react";
+import { AlertCircle, Upload, Search, Activity, Zap, BarChart3, Clock, Globe, FileVideo } from "lucide-react";
 import clsx from "clsx";
 import { runChannelAuditAction, optimizeUploadAction } from "@/app/actions/agent";
 
@@ -145,12 +145,37 @@ function SmartUploader() {
     const [result, setResult] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    const fileInputRef = useRef(null);
+
+    const handleFileSelect = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setFile(e.target.files[0]);
+        }
+    };
+
+    const triggerFileInput = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            setFile(e.dataTransfer.files[0]);
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
     const handleOptimize = async () => {
-        if (!topic) return;
+        if (!topic && !file) return; // Allow just file to be enough if topics can be inferred (future)
         setIsLoading(true);
 
         const formData = new FormData();
-        formData.append("topic", topic);
+        formData.append("topic", topic || file?.name); // Fallback to filename if no topic
         formData.append("filename", file?.name || "untitled.mp4");
 
         const data = await optimizeUploadAction(formData);
@@ -174,15 +199,38 @@ function SmartUploader() {
                 <div className="flex-1 flex flex-col space-y-6 relative z-10">
                     {/* Drag Zone */}
                     <div
-                        className="flex-1 border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center p-8 transition-colors hover:border-pink-500/50 hover:bg-white/5 cursor-pointer"
-                    // Add real drag handlers in prod
+                        onClick={triggerFileInput}
+                        onDrop={handleDrop}
+                        onDragOver={handleDragOver}
+                        className={clsx(
+                            "flex-1 border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-8 transition-colors cursor-pointer group",
+                            file ? "border-green-500/50 bg-green-500/5" : "border-white/10 hover:border-pink-500/50 hover:bg-white/5"
+                        )}
                     >
-                        <Upload className="w-10 h-10 text-zinc-600 mb-4" />
-                        <p className="text-zinc-400 font-medium">Drag Video File Here</p>
-                        <p className="text-xs text-zinc-600 mt-2">MP4, MOV (Max 2GB)</p>
-                        <button className="mt-4 text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-all">
-                            Browse Files
-                        </button>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileSelect}
+                            className="hidden"
+                            accept="video/*"
+                        />
+
+                        {file ? (
+                            <>
+                                <FileVideo className="w-10 h-10 text-green-400 mb-4" />
+                                <p className="text-green-400 font-medium">{file.name}</p>
+                                <p className="text-xs text-zinc-500 mt-2">{(file.size / (1024 * 1024)).toFixed(1)} MB Ready</p>
+                            </>
+                        ) : (
+                            <>
+                                <Upload className="w-10 h-10 text-zinc-600 mb-4 group-hover:text-pink-400 transition-colors" />
+                                <p className="text-zinc-400 font-medium group-hover:text-white">Drag Video File Here</p>
+                                <p className="text-xs text-zinc-600 mt-2">MP4, MOV (Max 2GB)</p>
+                                <button className="mt-4 text-xs bg-white/10 group-hover:bg-pink-500/20 group-hover:text-pink-200 px-3 py-1.5 rounded transition-all">
+                                    Browse Files
+                                </button>
+                            </>
+                        )}
                     </div>
 
                     <div className="space-y-4">
@@ -192,14 +240,14 @@ function SmartUploader() {
                                 type="text"
                                 value={topic}
                                 onChange={(e) => setTopic(e.target.value)}
-                                placeholder="e.g. 'Day in the life of a deeper software engineer'"
+                                placeholder={file ? "What happens in this video?" : "e.g. 'Day in the life'"}
                                 className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white placeholder:text-zinc-700 focus:border-pink-500 outline-none transition-colors"
                             />
                         </div>
 
                         <button
                             onClick={handleOptimize}
-                            disabled={!topic || isLoading}
+                            disabled={(!topic && !file) || isLoading}
                             className="w-full py-3 bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold rounded-lg hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                         >
                             {isLoading ? (

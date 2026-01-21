@@ -168,8 +168,24 @@ export default function ConfigForm() {
                                     </div>
                                 </div>
                             </div>
+
                             <div className={clsx("w-2 h-2 rounded-full transition-colors", isConnected ? "bg-primary shadow-[0_0_10px_white]" : "bg-zinc-700 group-hover:bg-green-500")} />
                         </button>
+
+                        {/* Disconnect Option */}
+                        {isConnected && (
+                            <button
+                                onClick={async (e) => {
+                                    e.stopPropagation();
+                                    const { disconnectYouTube } = await import("@/app/actions/youtube");
+                                    await disconnectYouTube();
+                                    window.location.reload();
+                                }}
+                                className="w-full text-xs text-red-500 hover:text-red-400 text-center hover:bg-red-500/10 p-2 rounded transition-colors"
+                            >
+                                Disconnect Account
+                            </button>
+                        )}
 
                         {/* Studio Link */}
                         <a href="/dashboard/studio" className="w-full flex items-center justify-between p-4 rounded-lg border border-border hover:bg-surface-highlight hover:border-purple-500/50 transition-all group cursor-pointer text-decoration-none">
@@ -205,7 +221,7 @@ export default function ConfigForm() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
 
             <div className="mt-12">
                 <button
@@ -224,6 +240,6 @@ export default function ConfigForm() {
                 </button>
             </div>
 
-        </div>
+        </div >
     );
 }

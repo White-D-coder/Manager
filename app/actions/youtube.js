@@ -51,3 +51,10 @@ export async function uploadVideoAction(videoAsset, metadata) {
     if (!token) return { error: "No YouTube Token" };
     return await YouTubeService.uploadVideo(videoAsset, metadata, token);
 }
+
+export async function disconnectYouTube() {
+    const cookieStore = await cookies();
+    cookieStore.delete("yt_access_token");
+    console.log("Debug: YouTube Token cookie deleted.");
+    return { success: true };
+}
