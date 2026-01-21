@@ -193,32 +193,34 @@ export default function ConfigForm() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-xs text-zinc-500 font-medium">My Interests / Skills</label>
+                                            <label className="text-xs text-zinc-500 font-medium">My Interests / Skills (Optional)</label>
                                             <textarea
                                                 value={wizardData.interests}
                                                 onChange={(e) => setWizardData({ ...wizardData, interests: e.target.value })}
-                                                placeholder="e.g. Coding, Minecraft, Cooking, True Crime..."
-                                                className="w-full h-24 bg-surface border border-border rounded-lg p-3 text-white placeholder:text-zinc-700 outline-none focus:border-purple-500 transition-all resize-none"
+                                                placeholder="e.g. Coding, Minecraft... OR leave blank to let AI find a Viral Niche for you."
+                                                className="w-full h-24 bg-surface border border-border rounded-lg p-3 text-white placeholder:text-zinc-500 outline-none focus:border-purple-500 transition-all resize-none"
                                             />
                                         </div>
 
                                         <button
                                             onClick={async () => {
-                                                if (!wizardData.interests) return;
                                                 setIsGenerating(true);
                                                 const { generateLaunchStrategyAction } = await import("@/app/actions/agent");
 
                                                 const formData = new FormData();
                                                 formData.append("format", wizardData.format);
-                                                formData.append("interests", wizardData.interests);
+                                                // Send explicit "AUTO_DISCOVERY" signal if empty
+                                                formData.append("interests", wizardData.interests || "AUTO_DISCOVERY: Find a global viral trend.");
 
                                                 const strategy = await generateLaunchStrategyAction(formData);
                                                 if (strategy && !strategy.error) {
                                                     setGeneratedStrategy(strategy);
+                                                } else {
+                                                    alert(strategy?.error || "Strategy Generation Failed. Try again.");
                                                 }
                                                 setIsGenerating(false);
                                             }}
-                                            disabled={!wizardData.interests || isGenerating}
+                                            disabled={isGenerating}
                                             className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                                         >
                                             {isGenerating ? (
