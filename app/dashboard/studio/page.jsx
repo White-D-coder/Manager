@@ -314,8 +314,7 @@ function SmartUploader() {
                         <div className="p-3 bg-black/50 border border-white/10 rounded-lg text-xs font-mono text-zinc-300 whitespace-pre-wrap leading-relaxed">
                             {result.description_blueprint?.hook_first_line}
                             {"\n\n"}
-                            {/* Simulate content */}
-                            [Content Summary...]
+                            {result.description_blueprint?.content_summary || "[AI is writing summary...]"}
                             {"\n\n"}
                             {result.description_blueprint?.hashtags?.join(" ")}
                         </div>
