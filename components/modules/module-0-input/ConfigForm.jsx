@@ -193,12 +193,12 @@ export default function ConfigForm() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-xs text-zinc-500 font-medium">My Interests / Skills (Optional)</label>
+                                            <label className="text-xs text-zinc-500 font-medium">My Interests / Skills</label>
                                             <textarea
                                                 value={wizardData.interests}
                                                 onChange={(e) => setWizardData({ ...wizardData, interests: e.target.value })}
-                                                placeholder="e.g. Coding, Minecraft... OR leave blank to let AI find a Viral Niche for you."
-                                                className="w-full h-24 bg-surface border border-border rounded-lg p-3 text-white placeholder:text-zinc-500 outline-none focus:border-purple-500 transition-all resize-none"
+                                                placeholder="e.g. Coding, Minecraft, Cooking, True Crime..."
+                                                className="w-full h-24 bg-surface border border-border rounded-lg p-3 text-white placeholder:text-zinc-700 outline-none focus:border-purple-500 transition-all resize-none"
                                             />
                                         </div>
 
@@ -209,8 +209,8 @@ export default function ConfigForm() {
 
                                                 const formData = new FormData();
                                                 formData.append("format", wizardData.format);
-                                                // Send explicit "AUTO_DISCOVERY" signal if empty
-                                                formData.append("interests", wizardData.interests || "AUTO_DISCOVERY: Find a global viral trend.");
+                                                // If interests are empty, we pass a special flag or just empty string
+                                                formData.append("interests", wizardData.interests || "");
 
                                                 const strategy = await generateLaunchStrategyAction(formData);
                                                 if (strategy && !strategy.error) {
@@ -221,15 +221,19 @@ export default function ConfigForm() {
                                                 setIsGenerating(false);
                                             }}
                                             disabled={isGenerating}
-                                            className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                            className={clsx(
+                                                "w-full py-3 font-bold rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50",
+                                                !wizardData.interests ? "bg-gradient-to-r from-pink-600 to-purple-600 text-white hover:opacity-90" : "bg-purple-600 hover:bg-purple-500 text-white"
+                                            )}
                                         >
                                             {isGenerating ? (
                                                 <>
-                                                    <Zap className="w-4 h-4 animate-spin" /> Generating Roadmap...
+                                                    <Zap className="w-4 h-4 animate-spin" /> Scanning Global Trends...
                                                 </>
                                             ) : (
                                                 <>
-                                                    <Zap className="w-4 h-4" /> Generate Launch Strategy
+                                                    <Zap className="w-4 h-4" />
+                                                    {!wizardData.interests ? "Auto-Detect Viral Niche (I don't know)" : "Generate Launch Strategy"}
                                                 </>
                                             )}
                                         </button>
