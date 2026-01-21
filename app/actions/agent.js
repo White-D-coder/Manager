@@ -70,18 +70,3 @@ export async function optimizeUploadAction(formData) {
 
     return optimizedData;
 }
-
-export async function generateLaunchStrategyAction(formData) {
-    const format = formData.get("format");
-    const interests = formData.get("interests");
-
-    if (!format) return { error: "Missing preferences" };
-
-    try {
-        const strategy = await GeminiBrain.generateLaunchStrategy({ format, interests });
-        if (!strategy) return { error: "AI Failed to generate strategy" };
-        return strategy;
-    } catch (e) {
-        return { error: e.message };
-    }
-}
