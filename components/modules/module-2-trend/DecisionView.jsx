@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useAppStore } from "@/lib/store";
 import { DecisionEngine } from "@/lib/brain/DecisionEngine";
-import { GeminiBrain } from "@/lib/brain/GeminiBrain";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { BrainCircuit, CheckCircle, XCircle, Sparkles, MessageSquare, Tag, Terminal, Send, ArrowRight } from "lucide-react";
 import clsx from "clsx";

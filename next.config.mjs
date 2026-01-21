@@ -6,8 +6,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const nextConfig = {
-
-
+    experimental: {
+        serverActions: {
+            bodySizeLimit: '50mb',
+        },
+    },
 };
 
 export default nextConfig;

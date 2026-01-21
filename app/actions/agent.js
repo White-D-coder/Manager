@@ -17,15 +17,13 @@ export async function runChannelAuditAction() {
     try {
         // 1. Fetch Real Channel Data
         const stats = await YouTubeService.getChannelStatistics(token);
-        // Fetch *my* videos. searchVideos defaults to 'forMine' if we add that logic, 
-        // or we fetch channel videos by ID.
-        // For MVP, we'll try to find videos from this channel specifically.
-        // We can assume searchVideos works for now or improve it.
-        let videos = await YouTubeService.searchVideos("", token);
+        // Fetch *my* videos using the new specific method
+        let videos = await YouTubeService.getChannelVideos(token);
 
-        // Filter to ensure they are ours if the API returns mixed results (unlikely with search usually, but good to be safe)
-        // Actually, searchVideos query="" might return trending if not scoped. 
-        // Let's assume for now it returns relevant content.
+        // Filter to ensure reliability (though getChannelVideos handles it)
+        if (!videos || videos.length === 0) {
+            console.warn("No videos found for channel. Audit might be limited.");
+        }
 
         // 2. Dynamic "Web Context" Generation (No Hardcoding)
         // If we had a SERP API, we would call: const webInsights = await searchWeb(`latest youtube trends for ${stats.title}`);
@@ -50,23 +48,57 @@ export async function runChannelAuditAction() {
     }
 }
 
+import fs from "fs/promises";
+import path from "path";
+import os from "os";
+
 export async function optimizeUploadAction(formData) {
     const topic = formData.get("topic");
-    const filename = formData.get("filename");
+    const file = formData.get("file"); // Expecting a File object
+    const filename = formData.get("filename") || file?.name || "untitled.mp4";
 
-    if (!topic) return { error: "Topic required" };
+    if (!topic && !file) return { error: "Topic or File required" };
 
-    // 1. Dynamic Trend Context
-    // Again, avoiding hardcoded "ASMR" etc.
-    // We ask the AI to "Think" about the topic first to find relevant trends.
-    const trendContext = {
-        user_topic: topic,
-        request: "Identify current viral formats relevant to this topic dynamically.",
-        timestamp: new Date().toISOString()
-    };
+    let tempFilePath = null;
 
-    // 2. AI Optimization
-    const optimizedData = await GeminiBrain.optimizeVideoUpload({ topic, filename }, trendContext);
+    try {
+        // 1. Handle File (if present)
+        if (file && file.size > 0) {
+            const buffer = Buffer.from(await file.arrayBuffer());
+            const tempDir = os.tmpdir();
+            tempFilePath = path.join(tempDir, `upload-${Date.now()}-${filename.replace(/[^a-z0-9.]/gi, '_')}`);
+            await fs.writeFile(tempFilePath, buffer);
+            console.log("Agent: Temp video saved to", tempFilePath);
+        }
 
-    return optimizedData;
+        // 2. Dynamic Trend Context
+        const trendContext = {
+            user_topic: topic || "Analyzed from video",
+            request: "Identify current viral formats relevant to this topic dynamically.",
+            timestamp: new Date().toISOString()
+        };
+
+        // 3. AI Optimization
+        const optimizedData = await GeminiBrain.optimizeVideoUpload({
+            topic: topic || "Infer from video",
+            filename,
+            filePath: tempFilePath // Pass the temp path
+        }, trendContext);
+
+        return optimizedData;
+
+    } catch (e) {
+        console.error("Optimization Action Failed", e);
+        return { error: "Failed to process video: " + e.message };
+    } finally {
+        // 4. Cleanup
+        if (tempFilePath) {
+            try {
+                await fs.unlink(tempFilePath);
+                console.log("Agent: Temp video deleted.");
+            } catch (cleanupErr) {
+                console.warn("Agent: Failed to delete temp file", cleanupErr);
+            }
+        }
+    }
 }

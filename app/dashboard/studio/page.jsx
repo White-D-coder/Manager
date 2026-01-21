@@ -90,20 +90,8 @@ function ChannelAuditor() {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        {/* Timing Analysis */}
-                        <div className="p-4 bg-surface rounded-xl border border-white/5 space-y-2">
-                            <div className="flex items-center gap-2 text-blue-400 text-xs font-bold uppercase">
-                                <Clock className="w-3 h-3" /> Timing Audit
-                            </div>
-                            <div className="text-2xl font-mono text-white">
-                                {auditData.timing_analysis?.recommended_upload_time || "N/A"}
-                            </div>
-                            <p className="text-xs text-zinc-500 leading-snug">
-                                {auditData.timing_analysis?.reason}
-                            </p>
-                        </div>
-
+                    {/* Timing & Velocity Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Velocity Insight */}
                         <div className="p-4 bg-surface rounded-xl border border-white/5 space-y-2">
                             <div className="flex items-center gap-2 text-green-400 text-xs font-bold uppercase">
@@ -116,7 +104,41 @@ function ChannelAuditor() {
                                 Why: {auditData.velocity_analysis?.why_it_won}
                             </p>
                         </div>
+
+                        {/* Quick Timing Verdict */}
+                        <div className="p-4 bg-surface rounded-xl border border-white/5 space-y-2">
+                            <div className="flex items-center gap-2 text-blue-400 text-xs font-bold uppercase">
+                                <Clock className="w-3 h-3" /> Strategic Shift
+                            </div>
+                            <div className="text-sm font-medium text-white">
+                                {auditData.timing_analysis?.recommended_upload_time || "N/A"}
+                            </div>
+                            <p className="text-xs text-zinc-500 leading-snug">
+                                {auditData.timing_analysis?.reason}
+                            </p>
+                        </div>
                     </div>
+
+                    {/* Weekly Schedule */}
+                    {auditData.timing_analysis?.weekly_schedule && (
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-xs font-bold uppercase text-purple-400">
+                                <Clock className="w-3 h-3" /> 7-Day Viral Forecast
+                            </div>
+                            <div className="grid grid-cols-7 gap-2">
+                                {Object.entries(auditData.timing_analysis.weekly_schedule).map(([day, time]) => (
+                                    <div key={day} className="flex flex-col items-center justify-center p-2 bg-white/5 rounded-lg border border-white/5">
+                                        <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">
+                                            {day.slice(0, 3)}
+                                        </div>
+                                        <div className="text-xs font-mono font-bold text-white">
+                                            {time}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Missed Opportunities */}
                     <div className="space-y-3">
@@ -175,7 +197,8 @@ function SmartUploader() {
         setIsLoading(true);
 
         const formData = new FormData();
-        formData.append("topic", topic || file?.name); // Fallback to filename if no topic
+        formData.append("topic", topic || ""); // Allow empty topic if file exists
+        if (file) formData.append("file", file); // Send the actual file
         formData.append("filename", file?.name || "untitled.mp4");
 
         const data = await optimizeUploadAction(formData);
@@ -253,7 +276,7 @@ function SmartUploader() {
                             {isLoading ? (
                                 <>
                                     <Zap className="w-4 h-4 animate-spin" />
-                                    Optimizing Metadata...
+                                    {file ? "Watching & Analyzing..." : "Optimizing Metadata..."}
                                 </>
                             ) : (
                                 "Generate Viral Metadata"
