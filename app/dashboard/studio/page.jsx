@@ -197,8 +197,7 @@ function SmartUploader() {
         setIsLoading(true);
 
         const formData = new FormData();
-        formData.append("topic", topic || ""); // Allow empty topic if file exists
-        if (file) formData.append("file", file); // Send the actual file
+        formData.append("topic", topic || file?.name); // Fallback to filename if no topic
         formData.append("filename", file?.name || "untitled.mp4");
 
         const data = await optimizeUploadAction(formData);
@@ -276,7 +275,7 @@ function SmartUploader() {
                             {isLoading ? (
                                 <>
                                     <Zap className="w-4 h-4 animate-spin" />
-                                    {file ? "Watching & Analyzing..." : "Optimizing Metadata..."}
+                                    Optimizing Metadata...
                                 </>
                             ) : (
                                 "Generate Viral Metadata"
