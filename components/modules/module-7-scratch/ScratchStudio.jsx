@@ -1,18 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { Sparkles, ArrowRight, Upload, Play, CheckCircle, Video, Copy, MonitorPlay } from "lucide-react";
-import { generateScratchIdeasAction, generateScratchScriptAction, finalizeScratchUploadAction } from "@/app/actions/scratch";
+import { useState, useEffect } from "react";
+import { Sparkles, ArrowRight, Upload, Play, CheckCircle, Video, Copy, MonitorPlay, Calendar } from "lucide-react";
+import { generateScratchIdeasAction, generateScratchScriptAction, finalizeScratchUploadAction, getWeeklyScheduleAction } from "@/app/actions/scratch";
 import clsx from "clsx";
 
 export default function ScratchStudio() {
     const [step, setStep] = useState(1); // 1: Topic, 2: Blueprint, 3: Upload, 4: Done
     const [topic, setTopic] = useState("");
     const [ideas, setIdeas] = useState([]);
+    const [weeklySchedule, setWeeklySchedule] = useState(null);
     const [loading, setLoading] = useState(false);
     const [script, setScript] = useState(null);
     const [uploadStatus, setUploadStatus] = useState("idle"); // idle, uploading, done
     const [finalData, setFinalData] = useState(null);
+
+    useEffect(() => {
+        // Load schedule immediately for context
+        getWeeklyScheduleAction().then(res => setWeeklySchedule(res));
+    }, []);
 
     const handleGetIdeas = async () => {
         setLoading(true);

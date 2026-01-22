@@ -34,3 +34,9 @@ export async function finalizeScratchUploadAction(formData, scriptContext) {
 
     return await ViralManager.processUserUpload(buffer, scriptContext, token);
 }
+
+export async function getWeeklyScheduleAction() {
+    // In a real app we would pass recent trends to be more accurate
+    // For now we rely on the Brain's general knowledge + generic trend simulation
+    return await GeminiBrain.analyzeWeeklySchedule([]);
+}
