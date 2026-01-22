@@ -99,6 +99,21 @@ export default function ConfigForm() {
                             </div>
                         </div>
 
+                        <div className="space-y-2">
+                            <label className="text-xs text-zinc-500 font-medium">Daily Upload Goal</label>
+                            <div className="flex items-center gap-4 bg-surface border border-border rounded-lg p-3">
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max="10"
+                                    value={config.targetUploadsPerDay || 1}
+                                    onChange={(e) => setConfig({ targetUploadsPerDay: parseInt(e.target.value) || 1 })}
+                                    className="w-16 bg-transparent text-white font-bold outline-none text-center border-r border-white/10"
+                                />
+                                <span className="text-sm text-zinc-400">videos per day (Smart Scheduled)</span>
+                            </div>
+                        </div>
+
                         <div className="space-y-2 relative">
                             <label className="text-xs text-zinc-500 font-medium flex justify-between">
                                 <span>Primary Niche (Be Specific)</span>

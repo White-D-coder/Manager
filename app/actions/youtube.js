@@ -45,11 +45,28 @@ export async function getRealChannelStats() {
     return await YouTubeService.getChannelStatistics(token);
 }
 
-export async function uploadVideoAction(videoAsset, metadata) {
+export async function uploadVideoAction(formData) {
     const cookieStore = await cookies();
     const token = cookieStore.get("yt_access_token")?.value;
     if (!token) return { error: "No YouTube Token" };
-    return await YouTubeService.uploadVideo(videoAsset, metadata, token);
+
+    const file = formData.get("file");
+    const title = formData.get("title");
+    const description = formData.get("description");
+    const tags = formData.get("tags") ? formData.get("tags").split(",") : [];
+    const publishAt = formData.get("publishAt"); // New: Scheduled Time
+
+    if (!file) return { error: "No file provided" };
+
+    try {
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+
+        return await YouTubeService.uploadVideo(buffer, { title, description, tags, publishAt }, token);
+    } catch (e) {
+        console.error("Upload Action Failed", e);
+        return { error: e.message };
+    }
 }
 
 export async function disconnectYouTube() {
@@ -57,4 +74,24 @@ export async function disconnectYouTube() {
     cookieStore.delete("yt_access_token");
     console.log("Debug: YouTube Token cookie deleted.");
     return { success: true };
+}
+
+export async function nicheScoutAction(query) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("yt_access_token")?.value;
+
+    if (!token) return { error: "Please connect YouTube channel first." };
+
+    console.log(`Debug: Scouting niche for: ${query}`);
+    return await YouTubeService.searchRecruitChannels(query, token);
+}
+
+export async function channelDeepDiveAction(channelId) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("yt_access_token")?.value;
+
+    if (!token) return { error: "Please connect YouTube channel first." };
+
+    console.log(`Debug: Deep diving into channel: ${channelId}`);
+    return await YouTubeService.getChannelDeepAnalytics(channelId, token);
 }

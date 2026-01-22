@@ -8,6 +8,7 @@ import clsx from "clsx";
 export default function AutoPilotView() {
     const [status, setStatus] = useState("IDLE"); // IDLE, RUNNING, STOPPING
     const [logs, setLogs] = useState([]);
+    const [videoCount, setVideoCount] = useState(2); // Default to user preference
     const [brainState, setBrainState] = useState({
         phase: "WAITING",
         prediction: "--:--",
@@ -25,19 +26,25 @@ export default function AutoPilotView() {
         try {
             // Trigger the server action
             setBrainState(prev => ({ ...prev, phase: "PHASE 1: INTELLIGENCE" }));
-            addLog("PHASE 1: Scanning Trends & Velocity...");
+            addLog(`PHASE 1: Scanning Trends & Scheduling ${videoCount} Videos...`);
 
-            const result = await runAutonomousLoopAction();
+            const result = await runAutonomousLoopAction(parseInt(videoCount));
 
             if (result.success) {
                 const logs = result.logs || [];
-                const winner = result.result?.suggestions?.niche || result.result?.intelligence?.suggested_niche || "Analzying...";
+                const intelligence = result.result?.intelligence;
+                const winner = intelligence?.suggested_niche || "Analzying...";
+                const uploadedResults = result.result?.results || [];
 
-                addLog(`✅ CYCLE COMPLETE. Video Uploaded: ${result.result.result.id}`); // Correct path from runFullCycle result
+                addLog(`✅ CYCLE COMPLETE. Scheduled ${uploadedResults.length} Videos.`);
+                uploadedResults.forEach((res, idx) => {
+                    addLog(`   > Video ${idx + 1}: ${res.status === 'uploaded' ? 'Scheduled' : 'Failed'} (${res.privacy || 'Error'})`);
+                });
+
                 setBrainState(prev => ({
                     ...prev,
                     phase: "SLEEPING (Next Cycle: Tomorrow)",
-                    uploads_today: prev.uploads_today + 1,
+                    uploads_today: prev.uploads_today + uploadedResults.length,
                     niche: winner
                 }));
             } else {
@@ -76,7 +83,7 @@ export default function AutoPilotView() {
                 </div>
                 <div className="bg-surface border border-white/10 p-4 rounded-xl">
                     <div className="text-[10px] text-zinc-500 font-bold uppercase">Builds Today</div>
-                    <div className="text-xl font-mono text-white">{brainState.uploads_today} / 2</div>
+                    <div className="text-xl font-mono text-white">{brainState.uploads_today} / {videoCount}</div>
                 </div>
                 <div className="bg-surface border border-white/10 p-4 rounded-xl">
                     <div className="text-[10px] text-zinc-500 font-bold uppercase">Safety Gate</div>
@@ -98,10 +105,23 @@ export default function AutoPilotView() {
                             <Zap className={clsx("w-12 h-12", status === "RUNNING" ? "text-accent" : "text-zinc-600")} />
                         </div>
 
+                        {/* CONFIGURATION INPUT */}
+                        <div className="w-full">
+                            <label className="text-xs text-zinc-500 font-bold uppercase mb-2 block text-center">Videos Per Day</label>
+                            <input
+                                type="number"
+                                min="1"
+                                max="10"
+                                value={videoCount}
+                                onChange={(e) => setVideoCount(e.target.value)}
+                                className="w-full bg-black border border-white/10 rounded-lg p-3 text-center text-white font-mono focus:border-accent outline-none transition-colors"
+                            />
+                        </div>
+
                         <button
                             onClick={handleStartLoop}
                             disabled={status === "RUNNING"}
-                            className={clsx("flex items-center gap-2 px-8 py-4 rounded-lg font-bold transition-all",
+                            className={clsx("flex items-center gap-2 px-8 py-4 rounded-lg font-bold transition-all w-full justify-center",
                                 status === "RUNNING"
                                     ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
                                     : "bg-accent hover:bg-accent-hover text-black shadow-lg shadow-accent/20"
@@ -112,7 +132,7 @@ export default function AutoPilotView() {
                         </button>
 
                         <div className="text-xs text-zinc-500 text-center max-w-xs">
-                            Triggers full autonomous loop: Research -> Strategy -> Creation -> Safety -> Simulation Upload.
+                            Triggers full autonomous loop: Research -> Strategy -> Creation -> Safety -> Simulation Upload for {videoCount} videos.
                         </div>
                     </div>
                 </div>

@@ -6,23 +6,54 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, Upload, Search, Activity, Zap, BarChart3, Clock, Globe, FileVideo } from "lucide-react";
 import clsx from "clsx";
 import { runChannelAuditAction, optimizeUploadAction } from "@/app/actions/agent";
+import { uploadVideoAction } from "@/app/actions/youtube";
+import NicheScouterView from "@/components/modules/niche-scouter/NicheScouterView";
 
 export default function StudioPage() {
+    const [mode, setMode] = useState("growth"); // 'growth' | 'niche'
+
     return (
-        <div className="min-h-full p-6 space-y-8">
-            <header className="flex items-center justify-between border-b border-white/10 pb-6">
+        <div className="min-h-full p-6 space-y-8 flex flex-col h-screen">
+            <header className="flex items-center justify-between border-b border-white/10 pb-6 shrink-0">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                        Growth Studio
+                        Top Creator Studio
                     </h1>
                     <p className="text-zinc-500 mt-1">AI-Powered Channel Intelligence & Upload Optimization</p>
                 </div>
+
+                <div className="flex bg-white/5 p-1 rounded-lg border border-white/10">
+                    <button
+                        onClick={() => setMode("growth")}
+                        className={clsx(
+                            "px-4 py-2 rounded-md text-sm font-bold transition-all",
+                            mode === "growth" ? "bg-purple-600 text-white shadow-lg" : "text-zinc-400 hover:text-white"
+                        )}
+                    >
+                        Growth Mode
+                    </button>
+                    <button
+                        onClick={() => setMode("niche")}
+                        className={clsx(
+                            "px-4 py-2 rounded-md text-sm font-bold transition-all",
+                            mode === "niche" ? "bg-purple-600 text-white shadow-lg" : "text-zinc-400 hover:text-white"
+                        )}
+                    >
+                        Niche Lab (New)
+                    </button>
+                </div>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <ChannelAuditor />
-                <SmartUploader />
-            </div>
+            {mode === "growth" ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 overflow-y-auto pb-20">
+                    <ChannelAuditor />
+                    <SmartUploader />
+                </div>
+            ) : (
+                <div className="flex-1 min-h-0 bg-transparent">
+                    <NicheScouterView />
+                </div>
+            )}
         </div>
     );
 }
@@ -192,18 +223,55 @@ function SmartUploader() {
         e.stopPropagation();
     };
 
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadResult, setUploadResult] = useState(null);
+    const [useSmartSchedule, setUseSmartSchedule] = useState(true);
+    const { config } = useAppStore();
+
     const handleOptimize = async () => {
-        if (!topic && !file) return; // Allow just file to be enough if topics can be inferred (future)
+        if (!topic && !file) return;
         setIsLoading(true);
 
         const formData = new FormData();
-        formData.append("topic", topic || file?.name); // Fallback to filename if no topic
+        formData.append("topic", topic || file?.name);
         formData.append("filename", file?.name || "untitled.mp4");
+        formData.append("uploadsPerDay", config.targetUploadsPerDay || 1);
 
         const data = await optimizeUploadAction(formData);
         if (data) setResult(data);
 
         setIsLoading(false);
+    };
+
+    const handlePublish = async () => {
+        if (!file || !result) return;
+        setIsUploading(true);
+        setUploadResult(null);
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("title", result.title_options?.[0]?.title || result.title_options?.[0] || "New Video");
+            formData.append("description",
+                `${result.description_blueprint?.hook_first_line}\n\n${result.description_blueprint?.content_summary}\n\n${result.description_blueprint?.hashtags?.join(" ")}`
+            );
+            formData.append("tags", result.tags?.join(",") || "");
+
+            if (useSmartSchedule && result.upload_strategy?.scheduled_publish_time) {
+                formData.append("publishAt", result.upload_strategy.scheduled_publish_time);
+            }
+
+            const response = await uploadVideoAction(formData);
+            if (response.error) throw new Error(response.error);
+            setUploadResult(response);
+            setResult(null);
+            setFile(null);
+        } catch (e) {
+            console.error(e);
+            alert("Upload Failed: " + e.message);
+        } finally {
+            setIsUploading(false);
+        }
     };
 
     return (
@@ -346,6 +414,72 @@ function SmartUploader() {
                             </p>
                         </div>
                     </div>
+
+                    {/* Scheduling Toggle */}
+                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5">
+                        <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-purple-400" />
+                            <span className="text-sm font-medium text-white">Smart Schedule</span>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked={useSmartSchedule} onChange={() => setUseSmartSchedule(!useSmartSchedule)} className="sr-only peer" />
+                            <div className="w-11 h-6 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                        </label>
+                    </div>
+
+                    <button
+                        onClick={handlePublish}
+                        disabled={isUploading}
+                        className={clsx(
+                            "w-full py-4 font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all mt-4",
+                            useSmartSchedule ? "bg-purple-600 hover:bg-purple-700 text-white shadow-purple-900/20" : "bg-red-600 hover:bg-red-700 text-white shadow-red-900/20"
+                        )}
+                    >
+                        {isUploading ? (
+                            <>
+                                <Zap className="w-5 h-5 animate-spin" />
+                                {useSmartSchedule ? "Scheduling..." : "Uploading..."}
+                            </>
+                        ) : (
+                            useSmartSchedule ? (
+                                <>
+                                    <Clock className="w-5 h-5" />
+                                    Schedule for {new Date(result.upload_strategy?.scheduled_publish_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </>
+                            ) : (
+                                <>
+                                    <Upload className="w-5 h-5" />
+                                    🚀 Publish Now (Private)
+                                </>
+                            )
+                        )}
+                    </button>
+
+                </div>
+            )}
+
+            {uploadResult && (
+                <div className="flex-1 flex flex-col items-center justify-center space-y-4 animate-in fade-in slide-in-from-bottom-8">
+                    <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mb-2 shadow-lg shadow-green-900/20">
+                        <Upload className="w-10 h-10 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white">Upload Complete!</h3>
+                    <p className="text-zinc-400 max-w-xs text-center">
+                        Your video is now processing on YouTube. It is set to <strong>Private</strong> for safety.
+                    </p>
+                    <a
+                        href={uploadResult.videoUrl}
+                        target="_blank"
+                        className="text-pink-400 hover:text-pink-300 underline font-mono"
+                    >
+                        {uploadResult.videoUrl}
+                    </a>
+                    <button
+                        onClick={() => { setUploadResult(null); setFile(null); setTopic(""); }}
+                        className="mt-6 px-6 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white font-bold text-sm transition-all"
+                    >
+                        Upload Another
+                    </button>
                 </div>
             )}
         </div>

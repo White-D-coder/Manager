@@ -53,6 +53,7 @@ export async function runChannelAuditAction() {
 export async function optimizeUploadAction(formData) {
     const topic = formData.get("topic");
     const filename = formData.get("filename");
+    const uploadsPerDay = parseInt(formData.get("uploadsPerDay") || "1");
 
     if (!topic) return { error: "Topic required" };
 
@@ -66,7 +67,7 @@ export async function optimizeUploadAction(formData) {
     };
 
     // 2. AI Optimization
-    const optimizedData = await GeminiBrain.optimizeVideoUpload({ topic, filename }, trendContext);
+    const optimizedData = await GeminiBrain.optimizeVideoUpload({ topic, filename }, trendContext, uploadsPerDay);
 
     return optimizedData;
 }
