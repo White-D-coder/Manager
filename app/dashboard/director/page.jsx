@@ -1,6 +1,6 @@
 "use client";
 
-import ScratchStudio from "@/components/modules/module-7-scratch/ScratchStudio";
+import ScratchStudio from "@/components/features/scratchpad/ScratchStudio";
 
 export default function DirectorPage() {
     return (

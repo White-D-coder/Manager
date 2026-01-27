@@ -7,7 +7,7 @@ import { AlertCircle, Upload, Search, Activity, Zap, BarChart3, Clock, Globe, Fi
 import clsx from "clsx";
 import { runChannelAuditAction, optimizeUploadAction } from "@/app/actions/agent";
 import { uploadVideoAction } from "@/app/actions/youtube";
-import NicheScouterView from "@/components/modules/niche-scouter/NicheScouterView";
+import NicheScouterView from "@/components/features/niche/NicheScouterView";
 
 export default function StudioPage() {
     const [mode, setMode] = useState("growth"); // 'growth' | 'niche'

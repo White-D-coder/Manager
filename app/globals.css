@@ -2,26 +2,38 @@
 
 :root {
   /* Pro Palette (Zinc/White) */
-  --background: #09090b; /* Zinc 950 */
-  --foreground: #fafafa; /* Zinc 50 */
-  
+  --background: #09090b;
+  /* Zinc 950 */
+  --foreground: #fafafa;
+  /* Zinc 50 */
+
   /* Status Colors */
-  --primary: #ffffff; /* Stark White for Action */
+  --primary: #ffffff;
+  /* Stark White for Action */
   --primary-dim: rgba(255, 255, 255, 0.1);
-  --secondary: #a1a1aa; /* Zinc 400 for secondary text */
+  --secondary: #a1a1aa;
+  /* Zinc 400 for secondary text */
   --secondary-dim: rgba(161, 161, 170, 0.1);
-  --accent: #3b82f6; /* Professional Blue (Subtle) */
+  --accent: #3b82f6;
+  /* Professional Blue (Subtle) */
   --accent-dim: rgba(59, 130, 246, 0.1);
-  
-  --success: #10b981; /* Emerald 500 */
-  --warning: #f59e0b; /* Amber 500 */
-  --destructive: #ef4444; /* Red 500 */
-  
+
+  --success: #10b981;
+  /* Emerald 500 */
+  --warning: #f59e0b;
+  /* Amber 500 */
+  --destructive: #ef4444;
+  /* Red 500 */
+
   /* Surface Layers */
-  --surface: #18181b; /* Zinc 900 */
-  --surface-highlight: #27272a; /* Zinc 800 */
-  --border: #27272a; /* Zinc 800 */
-  --border-highlight: #3f3f46; /* Zinc 700 */
+  --surface: #18181b;
+  /* Zinc 900 */
+  --surface-highlight: #27272a;
+  /* Zinc 800 */
+  --border: #27272a;
+  /* Zinc 800 */
+  --border-highlight: #3f3f46;
+  /* Zinc 700 */
 }
 
 @theme inline {
@@ -40,19 +52,21 @@
   --color-surface-highlight: var(--surface-highlight);
   --color-border: var(--border);
   --color-border-highlight: var(--border-highlight);
-  
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  
+
   --animate-fade-in: fade-in 0.3s ease-out;
 }
 
 body {
   background: var(--background);
+  background-image: radial-gradient(circle at 50% 0%, #18181b 0%, #09090b 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
 
 /* Custom Scrollbar - Minimal */
@@ -60,27 +74,33 @@ body {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  background: transparent; 
+  background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: var(--border); 
+  background: var(--border);
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-highlight); 
+  background: var(--border-highlight);
 }
 
 /* Utility classes for "Pro SaaS" feel */
 @layer utilities {
   .glass-panel {
-    background: rgba(24, 24, 27, 0.8);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
+    background: rgba(24, 24, 27, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
+
   .card-hover {
     transition: all 0.2s ease;
   }
+
   .card-hover:hover {
     border-color: var(--border-highlight);
     background: var(--surface-highlight);
