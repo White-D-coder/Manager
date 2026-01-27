@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppStore } from "@/lib/store";
-import ConfigForm from "@/components/features/configuration/ConfigForm";
+import OnboardingWizard from "@/components/features/onboarding/OnboardingWizard";
 import { motion } from "framer-motion";
 
 export default function DashboardPage() {
@@ -11,7 +11,7 @@ export default function DashboardPage() {
         <div className="min-h-full p-6">
             {!isSystemActive ? (
                 <div className="h-full flex items-center justify-center">
-                    <ConfigForm />
+                    <OnboardingWizard />
                 </div>
             ) : (
                 <ActiveSystemView />
