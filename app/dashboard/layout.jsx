@@ -1,7 +1,7 @@
 "use client";
 
 import LogConsole from "@/components/ui/LogConsole";
-import { Cpu, Activity } from "lucide-react";
+import { Cpu, Activity, Video } from "lucide-react";
 
 export default function DashboardLayout({
     children,
@@ -24,15 +24,37 @@ export default function DashboardLayout({
                 </div>
             </header>
 
-            {/* Main Content Area */}
-            <main className="flex-1 overflow-y-auto relative scrollbar-thin">
-                {children}
-            </main>
+
+
+            <div className="flex flex-1 overflow-hidden">
+                {/* Sidebar */}
+                <aside className="w-64 border-r border-border bg-surface/30 backdrop-blur-sm flex flex-col">
+                    <nav className="flex-1 p-4 space-y-2">
+                        <a href="/dashboard" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md hover:bg-white/5 transition-colors text-muted-foreground hover:text-foreground">
+                            <Activity className="w-4 h-4" />
+                            Overview
+                        </a>
+                        <a href="/dashboard/director" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md hover:bg-white/5 transition-colors text-muted-foreground hover:text-foreground">
+                            <Cpu className="w-4 h-4" />
+                            Content Director
+                        </a>
+                        <a href="/dashboard/video" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                            <Video className="w-4 h-4" />
+                            Video Lab
+                        </a>
+                    </nav>
+                </aside>
+
+                {/* Main Content Area */}
+                <main className="flex-1 overflow-y-auto relative scrollbar-thin">
+                    {children}
+                </main>
+            </div>
 
             {/* Bottom Log Console */}
             <div className="shrink-0 z-50">
                 <LogConsole />
             </div>
-        </div>
+        </div >
     );
 }
