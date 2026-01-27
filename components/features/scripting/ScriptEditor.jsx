@@ -60,6 +60,10 @@ export default function ScriptEditor() {
                 setStage('validating');
                 verifyScript(newScript);
                 return;
+                verifyScript(newScript);
+                return;
+            } else if (aiResult && aiResult.error) {
+                throw new Error("AI Error: " + aiResult.error);
             } else {
                 throw new Error("AI returned void payload.");
             }
