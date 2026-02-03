@@ -34,8 +34,31 @@ export async function chatWithVideoAgentAction(message, context) {
     return await GeminiBrain.chatWithVideoAgent(message, context);
 }
 
-export async function analyzeUploadTimingAction(trends) {
-    return await GeminiBrain.analyzeUploadTiming(trends);
+export async function analyzeUploadTimingAction(trends, uploadsPerDay) {
+    return await GeminiBrain.analyzeUploadTiming(trends, uploadsPerDay);
+}
+
+export async function runViralDiagnosisAction(videoId) {
+    const { YouTubeService } = await import("@/lib/api/youtube");
+    const cookieStore = await cookies();
+    const token = cookieStore.get("yt_access_token")?.value;
+
+    // 1. Fetch Video Metadata (We reuse searchVideos or add a specific get method)
+    // Using searchVideos with ID query works well enough for metadata
+    const videos = await YouTubeService.searchVideos(videoId, token);
+
+    if (!videos || videos.length === 0) {
+        return {
+            diagnosis_summary: "Could not find video data. Is the ID correct?",
+            why_no_audience: "If the video is Private/Unlisted, we cannot analyze it without full auth permissions.",
+            fix_plan: ["Check Video ID", "Ensure Video is Public/Unlisted"]
+        };
+    }
+
+    const videoData = videos[0];
+
+    // 2. Run Gemini Diagnosis
+    return await GeminiBrain.diagnoseVideoHealth(videoData);
 }
 
 export async function analyzeViralMetadataAction(trends) {

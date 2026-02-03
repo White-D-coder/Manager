@@ -60,7 +60,9 @@ function ActiveSystemView() {
 
             {activeModuleId === 5 && <ThumbnailLab />}
 
-            {activeModuleId >= 6 && <DeploymentCenter />}
+            {activeModuleId === 6 && <DeploymentCenter />}
+
+            {activeModuleId === 7 && <ViralDiagnostics />}
 
             {activeModuleId === 0 && (
                 <div className="h-full flex items-center justify-center text-zinc-500 font-mono">
@@ -79,3 +81,4 @@ import ScriptEditor from "@/components/features/scripting/ScriptEditor";
 import VideoStudioView from "@/components/features/production/VideoStudioView";
 import ThumbnailLab from "@/components/features/thumbnails/ThumbnailLab";
 import DeploymentCenter from "@/components/features/deployment/DeploymentCenter";
+import ViralDiagnostics from "@/components/features/analytics/ViralDiagnostics";

@@ -16,6 +16,7 @@ const navigation = [
     { name: 'Content Director', href: '/dashboard/director', icon: Clapperboard },
     { name: 'Niche Studio', href: '/dashboard/studio', icon: Layers },
     { name: 'Video Lab', href: '/dashboard/video', icon: Video },
+    { name: 'Audit', href: '/dashboard/audit', icon: Activity },
 ];
 
 export default function DashboardLayout({ children }) {
@@ -57,7 +58,7 @@ export default function DashboardLayout({ children }) {
                                 const isActive = pathname === item.href;
                                 return (
                                     <Link
-                                        key={item.href}
+                                        key={item.name}
                                         href={item.href}
                                         className={cn(
                                             "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group relative",
