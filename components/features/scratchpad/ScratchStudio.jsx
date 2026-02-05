@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sparkles, ArrowRight, Upload, Play, CheckCircle, Video, Copy, MonitorPlay, Calendar } from "lucide-react";
-import { generateScratchIdeasAction, generateScratchScriptAction, finalizeScratchUploadAction, getWeeklyScheduleAction } from "@/app/actions/scratch";
+import { Sparkles, ArrowRight, Upload, Play, CheckCircle, Video, Copy, MonitorPlay, Calendar, Flame } from "lucide-react";
+import { generateScratchIdeasAction, generateScratchScriptAction, finalizeScratchUploadAction, getWeeklyScheduleAction, predictViralityAction } from "@/app/actions/scratch";
+import ViralPredictionModal from "@/components/features/director/ViralPredictionModal";
 import clsx from "clsx";
 
 export default function ScratchStudio() {
@@ -14,6 +15,10 @@ export default function ScratchStudio() {
     const [script, setScript] = useState(null);
     const [uploadStatus, setUploadStatus] = useState("idle"); // idle, uploading, done
     const [finalData, setFinalData] = useState(null);
+
+    // Prediction State
+    const [isPredicting, setIsPredicting] = useState(false);
+    const [predictionResult, setPredictionResult] = useState(null);
 
     useEffect(() => {
         // Load schedule immediately for context
@@ -34,6 +39,23 @@ export default function ScratchStudio() {
         setScript(res);
         setStep(2);
         setLoading(false);
+    };
+
+    const handlePredictVirality = async () => {
+        if (!script) return;
+        setIsPredicting(true);
+        try {
+            const res = await predictViralityAction({
+                topic,
+                title: script.title,
+                hook: script.sections[0]?.text
+            });
+            setPredictionResult(res);
+        } catch (e) {
+            console.error(e);
+            alert("Prediction failed");
+        }
+        setIsPredicting(false);
     };
 
     const handleFileUpload = async (e) => {
@@ -60,7 +82,15 @@ export default function ScratchStudio() {
     };
 
     return (
-        <div className="h-full bg-background p-8 flex flex-col max-w-5xl mx-auto">
+        <div className="h-full bg-background p-8 flex flex-col max-w-5xl mx-auto relative">
+
+            {/* MODAL */}
+            {predictionResult && (
+                <ViralPredictionModal
+                    result={predictionResult}
+                    onClose={() => setPredictionResult(null)}
+                />
+            )}
 
             {/* PROGRESS HEADER */}
             <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
@@ -128,8 +158,19 @@ export default function ScratchStudio() {
             {step === 2 && script && (
                 <div className="flex-1 flex gap-6 animate-in fade-in slide-in-from-bottom-4 min-h-0">
                     {/* SCRIPT COL */}
-                    <div className="w-1/2 bg-surface rounded-xl border border-white/10 p-6 overflow-y-auto">
-                        <h3 className="text-sm font-bold text-zinc-500 uppercase mb-4">Script Blueprint</h3>
+                    <div className="w-1/2 bg-surface rounded-xl border border-white/10 p-6 overflow-y-auto flex flex-col">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-sm font-bold text-zinc-500 uppercase">Script Blueprint</h3>
+                            <button
+                                onClick={handlePredictVirality}
+                                disabled={isPredicting}
+                                className="flex items-center gap-2 text-xs bg-purple-500/10 text-purple-400 border border-purple-500/20 px-3 py-1.5 rounded-full hover:bg-purple-500/20 transition-all font-bold"
+                            >
+                                {isPredicting ? <Sparkles className="w-3 h-3 animate-spin" /> : <Flame className="w-3 h-3" />}
+                                {isPredicting ? "Analyzing..." : "Predict Virality"}
+                            </button>
+                        </div>
+
                         <div className="space-y-6">
                             {script.sections.map((sec, i) => (
                                 <div key={i} className="space-y-2">

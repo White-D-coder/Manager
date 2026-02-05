@@ -35,8 +35,34 @@ export async function finalizeScratchUploadAction(formData, scriptContext) {
     return await ViralManager.processUserUpload(buffer, scriptContext, token);
 }
 
-export async function getWeeklyScheduleAction() {
-    // In a real app we would pass recent trends to be more accurate
-    // For now we rely on the Brain's general knowledge + generic trend simulation
-    return await GeminiBrain.analyzeWeeklySchedule([]);
+return await GeminiBrain.analyzeWeeklySchedule([]);
+}
+
+export async function predictViralityAction(conceptData) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("yt_access_token")?.value;
+
+    const { YouTubeService } = await import("@/lib/api/youtube");
+
+    // 1. Get Live Trends for Context
+    let trends = [];
+    if (token) {
+        try {
+            // Search for the topic to see what's currently winning
+            trends = await YouTubeService.searchVideos(conceptData.topic, token);
+        } catch (e) {
+            console.warn("Virality Prediction: Failed to fetch trends", e);
+        }
+    }
+
+    // 2. AI Prediction
+    const prediction = await GeminiBrain.predictViralPotential(conceptData, trends);
+
+    // 3. Audience Authenticity Check
+    const audienceHealth = await GeminiBrain.analyzeAudienceAuthenticity(trends);
+
+    return {
+        ...prediction,
+        audience_health: audienceHealth
+    };
 }

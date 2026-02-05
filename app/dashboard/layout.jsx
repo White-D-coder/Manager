@@ -1,6 +1,7 @@
 "use client";
 
 import LogConsole from "@/components/ui/LogConsole";
+import MissionGuide from "@/components/features/dashboard/MissionGuide";
 import { Cpu, Activity, Video, Clapperboard, Layers, Zap } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -102,6 +103,9 @@ export default function DashboardLayout({ children }) {
             <div className="shrink-0 z-50 border-t border-border bg-background">
                 <LogConsole />
             </div>
+
+            {/* Floating Mission Guide */}
+            <MissionGuide />
         </div>
     );
 }
