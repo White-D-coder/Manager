@@ -35,7 +35,8 @@ export async function finalizeScratchUploadAction(formData, scriptContext) {
     return await ViralManager.processUserUpload(buffer, scriptContext, token);
 }
 
-return await GeminiBrain.analyzeWeeklySchedule([]);
+export async function generateScheduleAction() {
+    return await GeminiBrain.analyzeWeeklySchedule([]);
 }
 
 export async function predictViralityAction(conceptData) {

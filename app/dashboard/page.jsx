@@ -77,19 +77,19 @@ function CentralCommand() {
                     <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2 font-serif">
                         Command Center
                     </h1>
-                    <div className="flex items-center gap-4 text-sm text-zinc-500">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
                             System Online
                         </div>
-                        <span className="w-1 h-1 rounded-full bg-zinc-400" />
+                        <span className="w-1 h-1 rounded-full bg-primary/30" />
                         <div>{config?.account_type === "new" ? "New Account" : "Connected Channel"}</div>
                     </div>
                 </div>
 
                 {winningNiche && (
                     <div className="px-5 py-3 rounded-xl bg-gradient-to-r from-primary/10 to-secondary/10 border border-border backdrop-blur-md">
-                        <div className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1">
+                        <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
                             ACTIVE OPERATION
                         </div>
                         <div className="text-lg font-bold text-primary flex items-center gap-2">
@@ -108,7 +108,7 @@ function CentralCommand() {
                         href={mod.href}
                         className={clsx(
                             "group relative p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl",
-                            "bg-surface/50 hover:bg-surface",
+                            "bg-surface/50 hover:bg-surface border-border/50",
                             mod.border
                         )}
                     >
@@ -119,7 +119,7 @@ function CentralCommand() {
                         <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors font-serif">
                             {mod.title}
                         </h3>
-                        <p className="text-sm text-zinc-400 mb-6 font-medium">
+                        <p className="text-sm text-muted-foreground mb-6 font-medium">
                             {mod.desc}
                         </p>
 
@@ -132,12 +132,12 @@ function CentralCommand() {
 
             {/* Quick Insights Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-6 rounded-2xl bg-white/50 border border-border backdrop-blur-sm shadow-sm">
+                <div className="p-6 rounded-2xl bg-surface/40 border border-border backdrop-blur-sm shadow-sm">
                     <div className="flex items-center gap-3 mb-4">
                         <TrendingUp className="w-5 h-5 text-success" />
-                        <h3 className="font-bold text-zinc-600">Market Pulse</h3>
+                        <h3 className="font-bold text-foreground">Market Pulse</h3>
                     </div>
-                    <div className="h-24 flex items-center justify-center text-xs text-zinc-500 font-mono border border-dashed border-border rounded-lg bg-surface/50">
+                    <div className="h-24 flex items-center justify-center text-xs text-muted-foreground font-mono border border-dashed border-border rounded-lg bg-surface/30">
                         Processing Real-Time Trends...
                     </div>
                 </div>
@@ -145,9 +145,9 @@ function CentralCommand() {
                 <div className="p-6 rounded-2xl bg-white/50 border border-border backdrop-blur-sm shadow-sm">
                     <div className="flex items-center gap-3 mb-4">
                         <Users className="w-5 h-5 text-blue-500" />
-                        <h3 className="font-bold text-zinc-600">Audience Intel</h3>
+                        <h3 className="font-bold text-foreground">Audience Intel</h3>
                     </div>
-                    <div className="h-24 flex items-center justify-center text-xs text-zinc-500 font-mono border border-dashed border-border rounded-lg bg-surface/50">
+                    <div className="h-24 flex items-center justify-center text-xs text-muted-foreground font-mono border border-dashed border-border rounded-lg bg-surface/30">
                         Waiting for upload data...
                     </div>
                 </div>
@@ -156,7 +156,7 @@ function CentralCommand() {
                     <div className="text-3xl font-bold text-primary mb-1 font-serif">
                         {config?.targetUploadsPerDay || 1}
                     </div>
-                    <div className="text-xs text-zinc-500 uppercase font-bold tracking-wider">
+                    <div className="text-xs text-muted-foreground uppercase font-bold tracking-wider">
                         Daily Upload Target
                     </div>
                 </div>

@@ -1,39 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  /* Royal Heritage Palette */
-  --background: #F2F0E9;
-  /* Cream / Beige */
-  --foreground: #3E3B32;
-  /* Deep Charcoal / Aged Wood */
-
-  /* Status Colors & Accents */
-  --primary: #6B705C;
-  /* Olive Green */
-  --primary-dim: rgba(107, 112, 92, 0.1);
-  --secondary: #A5A58D;
-  /* Sage */
-  --secondary-dim: rgba(165, 165, 141, 0.1);
-  --accent: #B7B7A4;
-  /* Light Sage / Stone */
-  --accent-dim: rgba(183, 183, 164, 0.1);
-
-  --success: #606C38;
-  /* Dark Green */
-  --warning: #D4A373;
-  /* Warm Oak */
-  --destructive: #BC4749;
-  /* Muted Red */
-
-  /* Surface Layers */
-  --surface: #FDFCF8;
-  /* Pearl White */
-  --surface-highlight: #FFFFFF;
+  /* Bright Royal Palette */
+  --background: #FFFFFF;
   /* Pure White */
-  --border: #E6E2D6;
-  /* Taupe */
-  --border-highlight: #D1CFCD;
-  /* Darker Taupe */
+  --foreground: #0F172A;
+  /* Deep Navy/Slate - High Contrast */
+
+  /* Royal Colors */
+  --primary: #4338CA;
+  /* Royal Indigo */
+  --primary-dim: rgba(67, 56, 202, 0.1);
+  --secondary: #B45309;
+  /* Polished Gold */
+  --secondary-dim: rgba(180, 83, 9, 0.1);
+  --accent: #E2E8F0;
+  /* Light Slate (Silver/Platinum) */
+  --accent-dim: rgba(226, 232, 240, 0.5);
+
+  --success: #15803D;
+  /* Emerald */
+  --warning: #F59E0B;
+  /* Amber */
+  --destructive: #BE123C;
+  /* Crimson */
+
+  /* Surface Layers - Bright & Crisp */
+  --surface: #F8FAFC;
+  /* Ultra light Grey/Blue tint */
+  --surface-highlight: #FFFFFF;
+  --border: #E2E8F0;
+  /* Slate-200 */
+  --border-highlight: #CBD5E1;
+  /* Slate-300 */
 }
 
 @theme inline {
@@ -53,10 +52,11 @@
   --color-border: var(--border);
   --color-border-highlight: var(--border-highlight);
 
-  --font-sans: var(--font-cormorant), var(--font-geist-sans);
-  /* Default to Elegant Serif/Sans Hybrid */
+  --font-sans: var(--font-geist-sans);
+  /* Reverting to Sans for readability */
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-cinzel);
+  /* Keep Royal Headers */
   --font-serif: var(--font-cormorant);
 
   --animate-fade-in: fade-in 0.3s ease-out;
@@ -64,13 +64,11 @@
 
 body {
   background: var(--background);
-  /* Subtle paper grain texture overlay if possible, otherwise solid upscale beige */
-  background-image: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F2F0E9 100%);
   color: var(--foreground);
-  font-family: var(--font-serif);
-  /* Default to Cormorant for that "Book" feel */
-  font-size: 18px;
-  /* Slightly larger for readability with serif */
+  font-family: var(--font-sans);
+  /* Clean, modern readability */
+  font-size: 16px;
+  /* Standard size */
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
@@ -83,10 +81,12 @@ h4,
 h5,
 h6 {
   font-family: var(--font-display);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
+  color: #1E1B4B;
+  /* Very Deep Indigo for Headings */
 }
 
-/* Custom Scrollbar - Minimal & Elegant */
+/* Custom Scrollbar - Clean */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -97,34 +97,31 @@ h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
+  background: var(--border-highlight);
+  border-radius: 99px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
 
-/* Utility classes for "Royal Studio" feel */
+/* Utility classes for "Bright Royal" feel */
 @layer utilities {
   .glass-panel {
-    background: rgba(253, 252, 248, 0.7);
-    /* Light Frosted Glass */
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(107, 112, 92, 0.08);
-    /* Subtle Olive Border */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
-    /* Soft Shadow */
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   }
 
   .card-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease-in-out;
   }
 
   .card-hover:hover {
     border-color: var(--primary);
     transform: translateY(-2px);
-    box-shadow: 0 10px 40px -10px rgba(107, 112, 92, 0.15);
+    box-shadow: 0 10px 15px -3px rgba(67, 56, 202, 0.1), 0 4px 6px -2px rgba(67, 56, 202, 0.05);
   }
 }

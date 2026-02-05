@@ -39,8 +39,8 @@ export default function DashboardLayout({ children }) {
 
                 <div className="flex items-center gap-6 text-xs font-mono text-zinc-500">
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-highlight border border-border">
-                        <Activity className="w-3 h-3 text-emerald-500" />
-                        <span className="text-zinc-400">SYS: <span className="text-emerald-500">ONLINE</span></span>
+                        <Activity className="w-3 h-3 text-success" />
+                        <span className="text-muted-foreground/80">SYS: <span className="text-success">ONLINE</span></span>
                     </div>
                     <div className="hidden md:flex items-center gap-4">
                         <span>CPU: 12%</span>
@@ -65,10 +65,10 @@ export default function DashboardLayout({ children }) {
                                             "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group relative",
                                             isActive
                                                 ? "bg-primary text-white shadow-lg shadow-primary/20"
-                                                : "text-zinc-500 hover:text-foreground hover:bg-black/5"
+                                                : "text-muted-foreground hover:text-foreground hover:bg-primary/10"
                                         )}
                                     >
-                                        <item.icon className={cn("w-4 h-4 transition-colors", isActive ? "text-primary" : "text-zinc-500 group-hover:text-zinc-300")} />
+                                        <item.icon className={cn("w-4 h-4 transition-colors", isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary")} />
                                         {item.name}
                                         {isActive && (
                                             <div className="absolute right-2 w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
@@ -83,18 +83,18 @@ export default function DashboardLayout({ children }) {
                         <div className="p-3 rounded-lg bg-surface-highlight border border-border/50 shadow-sm">
                             <div className="flex items-center gap-2 mb-2">
                                 <Zap className="w-3 h-3 text-warning" />
-                                <span className="text-xs font-medium text-zinc-300">Pro Plan</span>
+                                <span className="text-xs font-medium text-muted-foreground">Pro Plan</span>
                             </div>
                             <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
                                 <div className="h-full w-[70%] bg-primary" />
                             </div>
-                            <p className="text-[10px] text-zinc-500 mt-2">70% Resources Used</p>
+                            <p className="text-[10px] text-muted-foreground/70 mt-2">70% Resources Used</p>
                         </div>
                     </div>
                 </aside>
 
                 {/* Main Content Area */}
-                <main className="flex-1 overflow-y-auto relative scrollbar-thin bg-gradient-to-b from-background to-[#050505]">
+                <main className="flex-1 overflow-y-auto relative scrollbar-thin bg-surface">
                     {children}
                 </main>
             </div >
