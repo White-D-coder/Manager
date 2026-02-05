@@ -50,18 +50,18 @@ function CentralCommand() {
             desc: "Edit videos & thumbnails",
             icon: Video,
             href: "/dashboard/video",
-            color: "text-pink-400",
-            bg: "bg-pink-500/10",
-            border: "border-pink-500/20"
+            color: "text-destructive",
+            bg: "bg-destructive/10",
+            border: "border-destructive/20"
         },
         {
             title: "Growth Audit",
             desc: "Analyze performance & SEO",
             icon: Activity,
             href: "/dashboard/audit",
-            color: "text-emerald-400",
-            bg: "bg-emerald-500/10",
-            border: "border-emerald-500/20"
+            color: "text-success",
+            bg: "bg-success/10",
+            border: "border-success/20"
         }
     ];
 
@@ -74,26 +74,26 @@ function CentralCommand() {
             {/* Header / Status */}
             <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
                 <div>
-                    <h1 className="text-4xl font-bold tracking-tight text-white mb-2">
+                    <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2 font-serif">
                         Command Center
                     </h1>
-                    <div className="flex items-center gap-4 text-sm text-zinc-400">
+                    <div className="flex items-center gap-4 text-sm text-zinc-500">
                         <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
                             System Online
                         </div>
-                        <span className="w-1 h-1 rounded-full bg-zinc-700" />
+                        <span className="w-1 h-1 rounded-full bg-zinc-400" />
                         <div>{config?.account_type === "new" ? "New Account" : "Connected Channel"}</div>
                     </div>
                 </div>
 
                 {winningNiche && (
-                    <div className="px-5 py-3 rounded-xl bg-gradient-to-r from-purple-900/40 to-blue-900/40 border border-white/10 backdrop-blur-md">
+                    <div className="px-5 py-3 rounded-xl bg-gradient-to-r from-primary/10 to-secondary/10 border border-border backdrop-blur-md">
                         <div className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1">
                             ACTIVE OPERATION
                         </div>
-                        <div className="text-lg font-bold text-white flex items-center gap-2">
-                            <Zap className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                        <div className="text-lg font-bold text-primary flex items-center gap-2">
+                            <Zap className="w-4 h-4 text-warning fill-warning" />
                             {winningNiche}
                         </div>
                     </div>
@@ -116,7 +116,7 @@ function CentralCommand() {
                             <mod.icon className="w-6 h-6" />
                         </div>
 
-                        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">
+                        <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors font-serif">
                             {mod.title}
                         </h3>
                         <p className="text-sm text-zinc-400 mb-6 font-medium">
@@ -132,28 +132,28 @@ function CentralCommand() {
 
             {/* Quick Insights Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-6 rounded-2xl bg-black/20 border border-white/5 backdrop-blur-sm">
+                <div className="p-6 rounded-2xl bg-white/50 border border-border backdrop-blur-sm shadow-sm">
                     <div className="flex items-center gap-3 mb-4">
-                        <TrendingUp className="w-5 h-5 text-green-400" />
-                        <h3 className="font-bold text-zinc-300">Market Pulse</h3>
+                        <TrendingUp className="w-5 h-5 text-success" />
+                        <h3 className="font-bold text-zinc-600">Market Pulse</h3>
                     </div>
-                    <div className="h-24 flex items-center justify-center text-xs text-zinc-600 font-mono border border-dashed border-white/5 rounded-lg">
+                    <div className="h-24 flex items-center justify-center text-xs text-zinc-500 font-mono border border-dashed border-border rounded-lg bg-surface/50">
                         Processing Real-Time Trends...
                     </div>
                 </div>
 
-                <div className="p-6 rounded-2xl bg-black/20 border border-white/5 backdrop-blur-sm">
+                <div className="p-6 rounded-2xl bg-white/50 border border-border backdrop-blur-sm shadow-sm">
                     <div className="flex items-center gap-3 mb-4">
-                        <Users className="w-5 h-5 text-blue-400" />
-                        <h3 className="font-bold text-zinc-300">Audience Intel</h3>
+                        <Users className="w-5 h-5 text-blue-500" />
+                        <h3 className="font-bold text-zinc-600">Audience Intel</h3>
                     </div>
-                    <div className="h-24 flex items-center justify-center text-xs text-zinc-600 font-mono border border-dashed border-white/5 rounded-lg">
+                    <div className="h-24 flex items-center justify-center text-xs text-zinc-500 font-mono border border-dashed border-border rounded-lg bg-surface/50">
                         Waiting for upload data...
                     </div>
                 </div>
 
-                <div className="p-6 rounded-2xl bg-black/20 border border-white/5 backdrop-blur-sm flex flex-col justify-center items-center text-center">
-                    <div className="text-3xl font-bold text-white mb-1">
+                <div className="p-6 rounded-2xl bg-white/50 border border-border backdrop-blur-sm flex flex-col justify-center items-center text-center shadow-sm">
+                    <div className="text-3xl font-bold text-primary mb-1 font-serif">
                         {config?.targetUploadsPerDay || 1}
                     </div>
                     <div className="text-xs text-zinc-500 uppercase font-bold tracking-wider">

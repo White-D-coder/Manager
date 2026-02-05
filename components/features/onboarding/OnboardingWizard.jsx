@@ -62,13 +62,13 @@ export default function OnboardingWizard() {
         <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
             {/* Background Ambience */}
             <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-purple-900/20 rounded-full blur-[120px]" />
-                <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[120px]" />
+                <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[120px]" />
             </div>
 
-            <div className="w-full max-w-2xl bg-surface/50 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl relative z-10">
+            <div className="w-full max-w-2xl bg-surface/80 backdrop-blur-xl border border-primary/10 rounded-2xl p-8 shadow-2xl relative z-10">
                 {/* Progress Bar */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-white/5">
+                <div className="absolute top-0 left-0 w-full h-1 bg-border/50">
                     <motion.div
                         className="h-full bg-primary"
                         initial={{ width: "0%" }}
@@ -90,8 +90,8 @@ export default function OnboardingWizard() {
                                 <Sparkles className="w-8 h-8 text-primary" />
                             </div>
                             <div className="space-y-4">
-                                <h1 className="text-4xl font-bold tracking-tight">Welcome to Social Growth</h1>
-                                <p className="text-zinc-400 max-w-md mx-auto">
+                                <h1 className="text-4xl font-bold tracking-tight text-foreground font-serif">Welcome to Social Growth</h1>
+                                <p className="text-zinc-500 max-w-md mx-auto">
                                     Your autonomous AI partner for YouTube growth. Let's set up your custom strategy engine.
                                 </p>
                             </div>
@@ -124,20 +124,20 @@ export default function OnboardingWizard() {
                                     className={clsx(
                                         "p-6 rounded-xl border transition-all text-left space-y-4 group",
                                         isConnected
-                                            ? "bg-green-500/10 border-green-500/50"
-                                            : "bg-surface border-white/10 hover:border-white/30"
+                                            ? "bg-success/10 border-success/50"
+                                            : "bg-surface border-border hover:border-primary/50"
                                     )}
                                 >
-                                    <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white">
+                                    <div className="w-10 h-10 rounded-full bg-destructive flex items-center justify-center text-white">
                                         <Youtube className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold text-lg">Connect YouTube</h3>
-                                        <p className="text-xs text-zinc-400 mt-1">
+                                        <h3 className="font-semibold text-lg text-foreground">Connect YouTube</h3>
+                                        <p className="text-xs text-zinc-500 mt-1">
                                             {isConnected ? `Connected: ${channelName}` : "Link your Google Brand Account"}
                                         </p>
                                     </div>
-                                    {isConnected && <div className="text-xs text-green-400 font-mono flex items-center gap-1"><Check className="w-3 h-3" /> VERIFIED</div>}
+                                    {isConnected && <div className="text-xs text-success font-mono flex items-center gap-1"><Check className="w-3 h-3" /> VERIFIED</div>}
                                 </button>
 
                                 <button
@@ -146,7 +146,7 @@ export default function OnboardingWizard() {
                                         "p-6 rounded-xl border transition-all text-left space-y-4",
                                         config.account_type === "new"
                                             ? "bg-primary/10 border-primary"
-                                            : "bg-surface border-white/10 hover:border-white/30"
+                                            : "bg-surface border-border hover:border-primary/50"
                                     )}
                                 >
                                     <div className="w-10 h-10 rounded-full bg-zinc-700 flex items-center justify-center text-white">
@@ -306,6 +306,6 @@ export default function OnboardingWizard() {
                     )}
                 </AnimatePresence>
             </div>
-        </div>
+        </div >
     );
 }

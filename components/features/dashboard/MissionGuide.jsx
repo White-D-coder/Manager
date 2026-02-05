@@ -72,13 +72,13 @@ export default function MissionGuide() {
     if (isComplete) {
         return (
             <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-10">
-                <div className="bg-green-500/10 border border-green-500/20 backdrop-blur-md p-4 rounded-xl shadow-2xl flex items-center gap-4">
-                    <div className="bg-green-500 text-black p-2 rounded-full">
+                <div className="bg-surface/90 border border-success/30 backdrop-blur-md p-4 rounded-xl shadow-2xl flex items-center gap-4">
+                    <div className="bg-success text-white p-2 rounded-full">
                         <CheckCircle className="w-6 h-6" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-green-500">Daily Mission Complete</h3>
-                        <p className="text-xs text-green-200">System is optimized for growth.</p>
+                        <h3 className="font-bold text-success">Daily Mission Complete</h3>
+                        <p className="text-xs text-zinc-500">System is optimized for growth.</p>
                     </div>
                 </div>
             </div>
@@ -91,15 +91,15 @@ export default function MissionGuide() {
                 {/* Minimized / Header */}
                 <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="bg-zinc-900/90 backdrop-blur border border-white/10 p-3 rounded-full shadow-lg flex items-center gap-2 hover:bg-zinc-800 transition-all group"
+                    className="bg-surface/90 backdrop-blur border border-border p-3 rounded-full shadow-lg flex items-center gap-2 hover:bg-surface-highlight transition-all group"
                 >
                     <div className={clsx("w-3 h-3 rounded-full animate-pulse",
-                        activeMissionStep === 0 ? "bg-blue-500" : "bg-accent"
+                        activeMissionStep === 0 ? "bg-blue-500" : "bg-primary"
                     )} />
-                    <span className="text-xs font-bold font-mono text-zinc-300 group-hover:text-white">
+                    <span className="text-xs font-bold font-mono text-zinc-600 group-hover:text-foreground">
                         STEP {activeMissionStep + 1}/{MISSIONS.length}: {currentMission.title}
                     </span>
-                    <ChevronRight className={clsx("w-4 h-4 transition-transform", isExpanded ? "rotate-90" : "")} />
+                    <ChevronRight className={clsx("w-4 h-4 transition-transform text-zinc-500", isExpanded ? "rotate-90" : "")} />
                 </button>
 
                 {/* Expanded Content */}
@@ -109,7 +109,7 @@ export default function MissionGuide() {
                             initial={{ opacity: 0, y: -10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                            className="bg-zinc-900/95 backdrop-blur-xl border border-white/10 p-5 rounded-2xl w-80 shadow-2xl origin-top-right"
+                            className="bg-surface/95 backdrop-blur-xl border border-border p-5 rounded-2xl w-80 shadow-2xl origin-top-right"
                         >
                             <div className="space-y-4">
                                 <div className="flex items-start gap-4">
@@ -117,8 +117,8 @@ export default function MissionGuide() {
                                         <currentMission.icon className="w-6 h-6 text-accent" />
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="font-bold text-white text-sm">{currentMission.title}</h3>
-                                        <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                                        <h3 className="font-bold text-foreground text-sm font-serif">{currentMission.title}</h3>
+                                        <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
                                             {currentMission.description}
                                         </p>
                                     </div>
@@ -139,8 +139,8 @@ export default function MissionGuide() {
                                     className="flex items-center justify-between w-full bg-white text-black py-2.5 px-4 rounded-lg text-sm font-bold hover:bg-zinc-200 transition-all hover:scale-[1.02] shadow-lg active:scale-95"
                                 >
                                     <span>{currentMission.action}</span>
-                                    <div className="w-5 h-5 bg-black/10 rounded-full flex items-center justify-center">
-                                        <ChevronRight className="w-3 h-3" />
+                                    <div className="w-5 h-5 bg-black/5 rounded-full flex items-center justify-center">
+                                        <ChevronRight className="w-3 h-3 text-zinc-600" />
                                     </div>
                                 </Link>
 

@@ -1,39 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  /* Pro Palette (Zinc/White) */
-  --background: #09090b;
-  /* Zinc 950 */
-  --foreground: #fafafa;
-  /* Zinc 50 */
+  /* Royal Heritage Palette */
+  --background: #F2F0E9;
+  /* Cream / Beige */
+  --foreground: #3E3B32;
+  /* Deep Charcoal / Aged Wood */
 
-  /* Status Colors */
-  --primary: #ffffff;
-  /* Stark White for Action */
-  --primary-dim: rgba(255, 255, 255, 0.1);
-  --secondary: #a1a1aa;
-  /* Zinc 400 for secondary text */
-  --secondary-dim: rgba(161, 161, 170, 0.1);
-  --accent: #3b82f6;
-  /* Professional Blue (Subtle) */
-  --accent-dim: rgba(59, 130, 246, 0.1);
+  /* Status Colors & Accents */
+  --primary: #6B705C;
+  /* Olive Green */
+  --primary-dim: rgba(107, 112, 92, 0.1);
+  --secondary: #A5A58D;
+  /* Sage */
+  --secondary-dim: rgba(165, 165, 141, 0.1);
+  --accent: #B7B7A4;
+  /* Light Sage / Stone */
+  --accent-dim: rgba(183, 183, 164, 0.1);
 
-  --success: #10b981;
-  /* Emerald 500 */
-  --warning: #f59e0b;
-  /* Amber 500 */
-  --destructive: #ef4444;
-  /* Red 500 */
+  --success: #606C38;
+  /* Dark Green */
+  --warning: #D4A373;
+  /* Warm Oak */
+  --destructive: #BC4749;
+  /* Muted Red */
 
   /* Surface Layers */
-  --surface: #18181b;
-  /* Zinc 900 */
-  --surface-highlight: #27272a;
-  /* Zinc 800 */
-  --border: #27272a;
-  /* Zinc 800 */
-  --border-highlight: #3f3f46;
-  /* Zinc 700 */
+  --surface: #FDFCF8;
+  /* Pearl White */
+  --surface-highlight: #FFFFFF;
+  /* Pure White */
+  --border: #E6E2D6;
+  /* Taupe */
+  --border-highlight: #D1CFCD;
+  /* Darker Taupe */
 }
 
 @theme inline {
@@ -61,7 +61,8 @@
 
 body {
   background: var(--background);
-  background-image: radial-gradient(circle at 50% 0%, #18181b 0%, #09090b 100%);
+  /* Subtle paper grain texture overlay if possible, otherwise solid upscale beige */
+  background-image: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F2F0E9 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
@@ -69,7 +70,7 @@ body {
   min-height: 100vh;
 }
 
-/* Custom Scrollbar - Minimal */
+/* Custom Scrollbar - Minimal & Elegant */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -85,24 +86,29 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-highlight);
+  background: var(--primary);
 }
 
-/* Utility classes for "Pro SaaS" feel */
+/* Utility classes for "Royal Studio" feel */
 @layer utilities {
   .glass-panel {
-    background: rgba(24, 24, 27, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(253, 252, 248, 0.7);
+    /* Light Frosted Glass */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(107, 112, 92, 0.08);
+    /* Subtle Olive Border */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+    /* Soft Shadow */
   }
 
   .card-hover {
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card-hover:hover {
-    border-color: var(--border-highlight);
-    background: var(--surface-highlight);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px -10px rgba(107, 112, 92, 0.15);
   }
 }
