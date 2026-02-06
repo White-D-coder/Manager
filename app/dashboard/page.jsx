@@ -37,9 +37,14 @@ function CentralCommand() {
         getYouTubeAuthUrl().then(url => setAuthUrl(url));
 
         // Verify real connection status from server cookie
-        checkConnectionStatus().then(isConnected => {
-            if (isConnected !== config?.connected) {
-                setConfig({ connected: isConnected });
+        checkConnectionStatus().then(status => {
+            // Status is now an object { connected, channelName, thumbnail }
+            if (status?.connected !== config?.connected || status?.channelName !== config?.channelName) {
+                setConfig({
+                    connected: !!status?.connected,
+                    channelName: status?.channelName,
+                    channelThumbnail: status?.thumbnail
+                });
             }
         });
     }, []);
@@ -60,7 +65,7 @@ function CentralCommand() {
                     </div>
                     <div>
                         <h2 className="text-xl font-bold text-foreground">
-                            {config?.connected ? "Channel Connected" : "Connect Your Channel"}
+                            {config?.connected ? (config.channelName || "Channel Connected") : "Connect Your Channel"}
                         </h2>
                         <p className="text-sm text-muted-foreground">
                             {config?.connected
