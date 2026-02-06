@@ -3,6 +3,26 @@
 import { YouTubeService } from "@/lib/api/youtube";
 import { cookies } from "next/headers";
 
+export async function checkConnectionStatus() {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("yt_access_token")?.value;
+
+    if (!token) return { connected: false };
+
+    try {
+        // Fetch basic channel info to get the name
+        const stats = await YouTubeService.getChannelStatistics(token);
+        return {
+            connected: true,
+            channelName: stats?.title || "Unknown Channel",
+            thumbnail: stats?.thumbnail
+        };
+    } catch (e) {
+        console.error("Failed to verify channel during status check", e);
+        return { connected: false };
+    }
+}
+
 export async function getYouTubeAuthUrl() {
     console.log("Debug: Generating YouTube Auth URL...");
     console.log("Debug: Env Check - ClientID:", !!process.env.YOUTUBE_CLIENT_ID, "Secret:", !!process.env.YOUTUBE_CLIENT_SECRET);

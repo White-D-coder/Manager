@@ -8,7 +8,7 @@ import { Activity, Clapperboard, Layers, Video, ArrowRight, Zap, TrendingUp, Use
 import Link from "next/link";
 import clsx from "clsx";
 import DashboardPipeline from "@/components/features/dashboard/DashboardPipeline";
-import { getYouTubeAuthUrl } from "@/app/actions/youtube";
+import { getYouTubeAuthUrl, checkConnectionStatus, disconnectYouTube } from "@/app/actions/youtube";
 
 export default function DashboardPage() {
     const { isSystemActive } = useAppStore();
@@ -26,15 +26,22 @@ export default function DashboardPage() {
     );
 }
 
-import DashboardPipeline from "@/components/features/dashboard/DashboardPipeline";
+
 
 function CentralCommand() {
-    const { winningNiche, config } = useAppStore();
+    const { winningNiche, config, setConfig } = useAppStore();
     const [authUrl, setAuthUrl] = useState(null);
 
     useEffect(() => {
         // Prefetch auth URL for the button
         getYouTubeAuthUrl().then(url => setAuthUrl(url));
+
+        // Verify real connection status from server cookie
+        checkConnectionStatus().then(isConnected => {
+            if (isConnected !== config?.connected) {
+                setConfig({ connected: isConnected });
+            }
+        });
     }, []);
 
     return (
@@ -74,9 +81,30 @@ function CentralCommand() {
                 )}
 
                 {config?.connected && (
-                    <div className="px-4 py-2 rounded-lg bg-background border border-border text-sm font-bold text-success flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                        Online
+                    <div className="flex items-center gap-3">
+                        <div className="px-4 py-2 rounded-lg bg-background border border-border text-sm font-bold text-success flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                            Online
+                        </div>
+                        <button
+                            onClick={async () => {
+                                // 1. Server disconnect
+                                await disconnectYouTube();
+
+                                // 2. Client-side cleanup (Nuclear option)
+                                document.cookie = "yt_access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+                                localStorage.removeItem('social-growth-storage'); // Clear persisted store
+
+                                // 3. State reset
+                                setConfig({ connected: false, channelName: null });
+
+                                // 4. Hard Reload
+                                window.location.href = "/dashboard";
+                            }}
+                            className="px-4 py-2 rounded-lg bg-surface hover:bg-muted border border-border text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                            Switch Account
+                        </button>
                     </div>
                 )}
             </div>
