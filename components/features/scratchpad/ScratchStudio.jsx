@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Sparkles, ArrowRight, Upload, Play, CheckCircle, Video, Copy, MonitorPlay, Calendar, Flame } from "lucide-react";
-import { generateScratchIdeasAction, generateScratchScriptAction, finalizeScratchUploadAction, getWeeklyScheduleAction, predictViralityAction } from "@/app/actions/scratch";
+import { generateScratchIdeasAction, generateScratchScriptAction, finalizeScratchUploadAction, generateScheduleAction, predictViralityAction } from "@/app/actions/scratch";
 import ViralPredictionModal from "@/components/features/director/ViralPredictionModal";
 import clsx from "clsx";
 
@@ -22,7 +22,7 @@ export default function ScratchStudio() {
 
     useEffect(() => {
         // Load schedule immediately for context
-        getWeeklyScheduleAction().then(res => setWeeklySchedule(res));
+        generateScheduleAction().then(res => setWeeklySchedule(res));
     }, []);
 
     const handleGetIdeas = async () => {

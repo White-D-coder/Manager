@@ -2,7 +2,7 @@
 
 import LogConsole from "@/components/ui/LogConsole";
 import MissionGuide from "@/components/features/dashboard/MissionGuide";
-import { Cpu, Activity, Video, Clapperboard, Layers, Zap } from "lucide-react";
+import { Cpu, Activity, Video, Clapperboard, Layers, Zap, Command } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { clsx } from "clsx";
@@ -13,7 +13,7 @@ function cn(...inputs) {
 }
 
 const navigation = [
-    { name: 'Mission Control', href: '/dashboard', icon: Activity },
+    { name: 'Mission Control', href: '/dashboard', icon: Command },
     { name: 'Content Director', href: '/dashboard/director', icon: Clapperboard },
     { name: 'Niche Studio', href: '/dashboard/studio', icon: Layers },
     { name: 'Video Lab', href: '/dashboard/video', icon: Video },
@@ -24,37 +24,29 @@ export default function DashboardLayout({ children }) {
     const pathname = usePathname();
 
     return (
-        <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden font-sans selection:bg-primary/20">
-            {/* Top Header - Glassmorphic */}
-            <header className="h-16 border-b border-border bg-surface/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-40 relative">
+        <div className="flex flex-col h-screen bg-surface text-foreground overflow-hidden font-sans">
+            {/* Top Header - Minimal */}
+            <header className="h-14 border-b border-border bg-background flex items-center justify-between px-4 shrink-0 z-40">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center border border-primary/30 shadow-sm">
-                        <Cpu className="w-5 h-5 text-primary" />
+                    <div className="w-8 h-8 rounded-md bg-foreground text-background flex items-center justify-center">
+                        <Cpu className="w-5 h-5" />
                     </div>
-                    <div>
-                        <h1 className="font-bold tracking-tight text-sm leading-none">SOCIAL GROWTH</h1>
-                        <p className="text-[10px] text-muted-foreground font-mono tracking-widest uppercase mt-0.5">Automated Systems</p>
-                    </div>
+                    <span className="font-semibold tracking-tight text-sm">Social Growth Machine</span>
                 </div>
 
-                <div className="flex items-center gap-6 text-xs font-mono text-zinc-500">
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-highlight border border-border">
-                        <Activity className="w-3 h-3 text-success" />
-                        <span className="text-muted-foreground/80">SYS: <span className="text-success">ONLINE</span></span>
-                    </div>
-                    <div className="hidden md:flex items-center gap-4">
-                        <span>CPU: 12%</span>
-                        <span>MEM: 4.2GB</span>
+                <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-muted">
+                        <div className="w-1.5 h-1.5 rounded-full bg-success" />
+                        <span>Online</span>
                     </div>
                 </div>
             </header>
 
             <div className="flex flex-1 overflow-hidden relative">
-                {/* Sidebar - Modern & Clean */}
-                <aside className="w-64 border-r border-border bg-surface/50 backdrop-blur-sm flex flex-col z-30">
-                    <div className="p-4">
-                        <div className="text-xs font-semibold text-zinc-600 mb-4 px-2 tracking-wider">MODULES</div>
-                        <nav className="space-y-1">
+                {/* Sidebar - Clean & Functional */}
+                <aside className="w-60 border-r border-border bg-background flex flex-col">
+                    <div className="p-3">
+                        <nav className="space-y-0.5">
                             {navigation.map((item) => {
                                 const isActive = pathname === item.href;
                                 return (
@@ -62,50 +54,46 @@ export default function DashboardLayout({ children }) {
                                         key={item.name}
                                         href={item.href}
                                         className={cn(
-                                            "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group relative",
+                                            "flex items-center gap-2.5 px-3 py-2 text-sm font-medium rounded-md transition-all",
                                             isActive
-                                                ? "bg-primary text-white shadow-lg shadow-primary/20"
-                                                : "text-muted-foreground hover:text-foreground hover:bg-primary/10"
+                                                ? "bg-muted text-foreground"
+                                                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                                         )}
                                     >
-                                        <item.icon className={cn("w-4 h-4 transition-colors", isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary")} />
+                                        <item.icon className={cn("w-4 h-4", isActive ? "text-foreground" : "text-muted-foreground")} />
                                         {item.name}
-                                        {isActive && (
-                                            <div className="absolute right-2 w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
-                                        )}
                                     </Link>
                                 );
                             })}
                         </nav>
                     </div>
 
-                    <div className="mt-auto p-4 border-t border-border/50">
-                        <div className="p-3 rounded-lg bg-surface-highlight border border-border/50 shadow-sm">
-                            <div className="flex items-center gap-2 mb-2">
-                                <Zap className="w-3 h-3 text-warning" />
-                                <span className="text-xs font-medium text-muted-foreground">Pro Plan</span>
+                    <div className="mt-auto p-3 border-t border-border">
+                        <div className="flex items-center gap-3 px-2 py-2">
+                            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                                <Zap className="w-4 h-4 text-muted-foreground" />
                             </div>
-                            <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
-                                <div className="h-full w-[70%] bg-primary" />
+                            <div>
+                                <div className="text-xs font-medium">Pro Plan</div>
+                                <div className="text-[10px] text-muted-foreground">70% Used</div>
                             </div>
-                            <p className="text-[10px] text-muted-foreground/70 mt-2">70% Resources Used</p>
                         </div>
                     </div>
                 </aside>
 
-                {/* Main Content Area */}
-                <main className="flex-1 overflow-y-auto relative scrollbar-thin bg-surface">
+                {/* Main Content Area - Solid Surface */}
+                <main className="flex-1 overflow-y-auto relative bg-surface p-6 md:p-8">
                     {children}
                 </main>
-            </div >
+            </div>
 
             {/* Bottom Log Console */}
-            < div className="shrink-0 z-50 border-t border-border bg-background" >
+            <div className="shrink-0 z-50 border-t border-border bg-background">
                 <LogConsole />
-            </div >
+            </div>
 
             {/* Floating Mission Guide */}
-            < MissionGuide />
-        </div >
+            <MissionGuide />
+        </div>
     );
 }
