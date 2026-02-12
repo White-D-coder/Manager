@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { Loader2, Video, Upload, Sparkles, AlertCircle } from "lucide-react";
+import clsx from "clsx";
 
 export default function VideoGeneratorPage() {
     const [prompt, setPrompt] = useState("");
     const [image, setImage] = useState(null);
+    const [modelType, setModelType] = useState('FAST'); // 'FAST' or 'QUALITY'
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [videoUrl, setVideoUrl] = useState(null);
@@ -34,7 +36,7 @@ export default function VideoGeneratorPage() {
             const response = await fetch("/api/video", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt, image }),
+                body: JSON.stringify({ prompt, image, modelType }),
             });
 
             const data = await response.json();
@@ -75,19 +77,47 @@ export default function VideoGeneratorPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Controls */}
-                <div className="space-y-6 bg-card p-6 rounded-xl border shadow-sm">
+                <div className="space-y-6 bg-card p-6 rounded-xl border shadow-sm h-fit">
+
+                    {/* Model Selector */}
+                    <div className="p-1 bg-muted rounded-lg flex gap-1">
+                        <button
+                            onClick={() => setModelType('FAST')}
+                            className={clsx(
+                                "flex-1 py-1.5 text-sm font-medium rounded-md transition-all",
+                                modelType === 'FAST' ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+                            )}
+                        >
+                            ⚡ Fast Draft
+                        </button>
+                        <button
+                            onClick={() => setModelType('QUALITY')}
+                            className={clsx(
+                                "flex-1 py-1.5 text-sm font-medium rounded-md transition-all",
+                                modelType === 'QUALITY' ? "bg-background shadow-sm text-primary" : "text-muted-foreground hover:text-foreground"
+                            )}
+                        >
+                            ✨ Pro Quality
+                        </button>
+                    </div>
+
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Text Prompt</label>
+                        <label className="text-sm font-medium flex justify-between">
+                            <span>Text Prompt</span>
+                            {modelType === 'QUALITY' && <span className="text-[10px] text-primary uppercase font-bold tracking-wider">High Fidelity</span>}
+                        </label>
                         <textarea
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
-                            placeholder="A cyberpunk city with neon rain..."
-                            className="w-full h-32 p-3 rounded-md bg-background border focus:ring-2 focus:ring-primary outline-none resize-none"
+                            placeholder={modelType === 'QUALITY'
+                                ? "Describe a cinematic scene with detailed lighting and movement..."
+                                : "A cyberpunk city with neon rain..."}
+                            className="w-full h-32 p-3 rounded-md bg-background border focus:ring-2 focus:ring-primary outline-none resize-none transition-colors"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Reference Image (Optional)</label>
+                        <label className="text-sm font-medium">Reference Image {modelType === 'QUALITY' && <span className="text-muted-foreground">(Highly Recommended)</span>}</label>
                         <div className="relative group cursor-pointer border-2 border-dashed border-border rounded-lg p-8 transition-colors hover:border-primary/50 text-center">
                             <input
                                 type="file"
@@ -97,7 +127,7 @@ export default function VideoGeneratorPage() {
                             />
 
                             {imagePreview ? (
-                                <img src={imagePreview} alt="Preview" className="mx-auto max-h-40 rounded shadow-md" />
+                                <img src={imagePreview} alt="Preview" className="mx-auto max-h-40 rounded shadow-md object-contain" />
                             ) : (
                                 <div className="flex flex-col items-center gap-2 text-muted-foreground">
                                     <Upload className="w-8 h-8" />
@@ -108,7 +138,7 @@ export default function VideoGeneratorPage() {
                         {imagePreview && (
                             <button
                                 onClick={() => { setImage(null); setImagePreview(null); }}
-                                className="text-xs text-red-500 hover:underline"
+                                className="text-xs text-destructive hover:underline"
                             >
                                 Clear Image
                             </button>
@@ -118,17 +148,20 @@ export default function VideoGeneratorPage() {
                     <button
                         onClick={generateVideo}
                         disabled={loading || (!prompt && !image)}
-                        className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className={clsx(
+                            "w-full py-3 font-bold rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed",
+                            modelType === 'QUALITY' ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg" : "bg-primary text-primary-foreground"
+                        )}
                     >
                         {loading ? (
                             <>
                                 <Loader2 className="w-5 h-5 animate-spin" />
-                                Dreaming...
+                                {modelType === 'QUALITY' ? "Rendering Cinematic..." : "Dreaming..."}
                             </>
                         ) : (
                             <>
                                 <Sparkles className="w-5 h-5" />
-                                Generate Video
+                                {modelType === 'QUALITY' ? "Generate Pro Video" : "Generate Draft"}
                             </>
                         )}
                     </button>
